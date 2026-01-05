@@ -9,8 +9,12 @@ import UIKit
 */
 
 //  Solution to Exercise 1
-let name = "Borey"
+var name:String?
+name = nil
+
+
 var age = 27
+
 print("\(name) is \(age) years old.")
 // This is called string interpolation. It lets you put variables inside strings.
 if age >= 18 {
@@ -18,3 +22,5 @@ if age >= 18 {
 } else {
     print("Can't vote")
 }
+
+

@@ -10,13 +10,6 @@ func greetUser() {
 greetUser() // Prints "Hello, welcome to the app!"
 
 
-
-
-
-
-
-
-
 /** Function with parameters */
 func greetUserByName(name: String) {
     print("Hello, \(name)!")

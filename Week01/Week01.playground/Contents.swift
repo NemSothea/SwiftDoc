@@ -1,6 +1,7 @@
 import UIKit
 
 var greeting = "Hello, playground"
+print(greeting)
 
 /**
  Storing Data - Variables & Constants
@@ -37,6 +38,7 @@ let a = 10
 let b = 3
 let sum = a + b// 13
 let isGreater = a > b// true
+print(isGreater)
 var counter = 0
 counter += 1// counter is now 1
 
