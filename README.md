@@ -1,66 +1,206 @@
-# Course Title: iOS App Development: From UIKit Fundamentals to Modern SwiftUI
+# 🗓️ Complete 12-Week Intermediate Course Outline
 
-## Revised Week-by-Week Outline (Integrating UIKit)
+### Phase 1: Foundation & Architecture (Weeks 1-3)
 
-### Part 1: Swift & UIKit Foundation (Weeks 1-6)
+#### Week 1: Project Setup & MVVM Architecture
+- **Topic:** Laying the foundation with clean architecture
+- **Lesson Breakdown:**
+    - Setting up the Xcode project with proper folder structure
+    - Introduction to MVVM with the new `@Observable` macro (iOS 17+)
+    - Creating the core data models: `Transaction`, `FarmActivity`, `Pest`, `JournalEntry`
+    - Building a `FarmManager` (main view model) to coordinate all features
+    - **Live Coding:** Create all data models and the main `FarmViewModel` class
+- **Mini-Project:**
+    - Set up the project with folders: `Models`, `ViewModels`, `Views`, `Utilities`
+    - Implement the `FarmViewModel` with empty arrays for each data type
+    - Create a main tab view with placeholders for 4 tabs (Finance, Calendar, Guide, Journal)
 
-| **Week** | **Topic** | **Lesson Breakdown (3 Hours)** | **Homework / Mini-Project** |
-|----------|-----------|--------------------------------|-----------------------------|
-| 1 | Xcode & Swift Basics | **Hour 1:** Course intro, Xcode setup, Intro to Storyboards.<br><br>**Hour 2:** Variables, Constants, Data Types.<br><br>**Hour 3:** Operators, if/else, and switch. | Build a Playground that performs simple calculations and logic. |
-| 2 | Swift for UIKit | **Hour 1:** Functions and Optionals (if let, guard let).<br><br>**Hour 2:** Collections (Arrays, Dictionaries).<br><br>**Hour 3:** UIKit Concept: IBOutlet and IBAction. Connect a button in a storyboard to code. | Build a Storyboard app with a button that updates a label when pressed. |
-| 3 | The ViewController Lifecycle | **Hour 1:** Create a new project without SwiftUI. Intro to UIViewController.<br><br>**Hour 2:** The view lifecycle: viewDidLoad(), viewDidAppear(\_:).<br><br>**Hour 3:** Adding views programmatically (e.g., UILabel, UIButton) in viewDidLoad(). | Build an app that creates and displays several UI elements entirely in code. |
-| 4 | Navigation with UIKit | **Hour 1:** UINavigationController: pushing and popping ViewControllers.<br><br>**Hour 2:** Segues: show, present modally. Passing data forward with prepare(for:sender:).<br><br>**Hour 3:** Pattern: The Delegate Pattern explained. Passing data backwards between ViewControllers. | Build a two-screen app: a list of items on the first screen, tap one to see its detail on the second. |
-| 5 | Tables & Lists (UITableView) | **Hour 1:** The core of iOS: UITableView.<br><br>**Hour 2:** UITableViewDataSource: numberOfRowsInSection, cellForRowAt.<br><br>**Hour 3:** UITableViewDelegate: handling row taps (didSelectRowAt). | Build a classic to-do list app using a UITableView and a Storyboard. |
-| 6 | Data in UIKit | **Hour 1:** Model objects (struct). Creating a TodoItem model.<br><br>**Hour 2:** Populating the UITableView with an array of model objects.<br><br>**Hour 3:** Review & Q&A: The MVC (Model-View-Controller) pattern in your app. | Refactor the to-do list app to use a proper model layer. |
+#### Week 2: SwiftData Persistence
+- **Topic:** Saving data permanently with SwiftData
+- **Lesson Breakdown:**
+    - Converting models to SwiftData `@Model` classes
+    - Setting up the `modelContainer` and `modelContext`
+    - Understanding `@Query` for automatic UI updates
+    - Basic CRUD operations (Create, Read, Update, Delete)
+    - **Live Coding:** Convert all four models to SwiftData, test saving and fetching
+- **Mini-Project:**
+    - Complete SwiftData implementation for all models
+    - Add sample data on first launch
+    - Verify data persists after app restart
 
-### Part 2: Transitioning to Modern SwiftUI (Weeks 7-12)
+#### Week 3: Programmatic Navigation & Tab Coordination
+- **Topic:** Building a professional navigation system
+- **Lesson Breakdown:**
+    - `NavigationStack` and `NavigationPath` for each tab
+    - Creating a `NavigationCoordinator` to manage navigation state
+    - Passing data between screens (e.g., from list to detail)
+    - Deep linking simulation: Opening to a specific transaction
+    - **Live Coding:** Build a navigation system where each tab has independent navigation state
+- **Mini-Project:**
+    - Implement a `NavigationCoordinator` for the Finance tab
+    - Create list → detail navigation for transactions
+    - Add "Edit" functionality with proper navigation
 
-| **Week** | **Topic** | **Lesson Breakdown (3 Hours)** | **Homework / Mini-Project** |
-|----------|-----------|--------------------------------|-----------------------------|
-| 7 | Hello, SwiftUI! The Paradigm Shift | **Hour 1:** Contrast: Declarative UI vs. Imperative UI (UIKit). Why SwiftUI exists.<br><br>**Hour 2:** Create a new SwiftUI project. Explore the Canvas, Previews, and basic Views (Text, VStack, Image).<br><br>**Hour 3:** Modifiers: the building blocks of styling. | Recreate the simple profile screen from Week 4, but now in SwiftUI. |
-| 8 | SwiftUI State & Data Flow | **Hour 1:** The magic of @State. Rebuilding the UIKit button+label example in 5 lines of code.<br><br>**Hour 2:** @Binding: creating a connection between parent and child views.<br><br>**Hour 3:** Contrast: Compare passing data with Bindings vs. UIKit's Delegates and prepare(for:sender:). | Build a SwiftUI app with a toggle in the parent view that controls a text state in a child view. |
-| 9 | SwiftUI Lists & Navigation | **Hour 1:** List and ForEach. Incredibly simple compared to UITableView DataSource.<br><br>**Hour 2:** NavigationStack and NavigationLink.<br><br>**Hour 3:** Final Project Kick-off: Students choose to build their final project in either UIKit or SwiftUI, or a mix. | Rebuild the to-do list app from Week 5/6 in SwiftUI. Compare the line count and complexity. |
-| 10 | Architecture & Networking | **Hour 1:** Managing complex state: @StateObject & ObservableObject (the SwiftUI equivalent of a ViewController's central data manager).<br><br>**Hour 2:** Networking with URLSession and async/await in SwiftUI.<br><br>**Hour 3:** Project Work Session. | Build an app that fetches data from an API and displays it in a SwiftUI List. |
-| 11 | Integration & Polish | **Hour 1:** Using UIKit in SwiftUI: UIViewRepresentable (e.g., to use a MKMapView).<br><br>**Hour 2:** Using SwiftUI in UIKit: UIHostingController (putting a SwiftUI view inside a UIKit app).<br><br>**Hour 3:** Simple animations in SwiftUI (.animation() modifier). | Add a simple animation to any of the previous SwiftUI apps. |
-| 12 | App Showcase & Next Steps | **Hour 1-2:** Final Project Presentations! (The Apple Developer Program is 99 USD per membership year. Prices may vary by region and are listed in local currency during the enrollment process.)<br><br>**Hour 3:** Course wrap-up. When to choose UIKit vs. SwiftUI. Overview of the App Store submission process. | Submit the final project. |
+---
+
+### Phase 2: Core Features (Weeks 4-7)
+
+#### Week 4: Finance Tracker Module (Project 1)
+- **Topic:** Building the expense and income tracking system
+- **Lesson Breakdown:**
+    - Creating the transaction list with filtering (expense/income/all)
+    - Building an "Add Transaction" form with category picker
+    - Implementing real-time calculations (total expenses, income, profit)
+    - Formatting currency for local users (Riel and Dollar support)
+    - **Live Coding:** Build the complete Finance tab with add/edit/delete
+- **Mini-Project:**
+    - Complete Finance tab with all CRUD operations
+    - Add a summary card showing current balance, total expenses, total income
+    - Implement category filtering (Seeds, Fertilizer, Labor, Tools, Sales)
+
+#### Week 5: Calendar & Reminders Module (Project 2)
+- **Topic:** Scheduling activities with local notifications
+- **Lesson Breakdown:**
+    - Building a calendar view with `DatePicker` and custom grid
+    - Creating the `FarmActivity` model with date, type, notes
+    - Requesting notification permissions
+    - Scheduling local notifications with `UNUserNotificationCenter`
+    - Handling notification tap to open specific activity
+    - **Live Coding:** Build the Calendar tab with activity list and "Add Reminder" screen
+- **Mini-Project:**
+    - Complete the Calendar tab with activity CRUD
+    - Schedule notifications for each activity (1 day before, on the day)
+    - Test notifications work when app is closed
+
+#### Week 6: Pest & Disease Guide Module (Project 3)
+- **Topic:** Building an offline reference library
+- **Lesson Breakdown:**
+    - Designing the `Pest` model with name, symptoms, treatment, image name
+    - Creating a searchable list with `searchable` modifier
+    - Implementing detail view with expandable sections
+    - Pre-loading data from JSON file on first launch
+    - Making it work completely offline
+    - **Live Coding:** Build the Pest Guide tab with search and category filtering
+- **Mini-Project:**
+    - Create a JSON file with at least 10 pests/diseases
+    - Load this data into SwiftData on first launch
+    - Implement search and category tabs (Insects, Fungal, Bacterial)
+
+#### Week 7: Daily Journal Module (Project 4)
+- **Topic:** Digital notebook with rich text and weather
+- **Lesson Breakdown:**
+    - Building the `JournalEntry` model with date, content, weather, photos
+    - Creating a timeline view of entries (reverse chronological)
+    - Implementing weather selection (Sunny, Rainy, Cloudy, Windy)
+    - Adding photos from library with `PhotosPicker`
+    - Search and filter by date/weather
+    - **Live Coding:** Build the Journal tab with entry list and add/edit screen
+- **Mini-Project:**
+    - Complete Journal tab with photo attachment
+    - Implement weather picker with SF Symbols
+    - Add search functionality to find entries by text
 
 ---
 
-## Course Overview
+### Phase 3: Integration & Polish (Weeks 8-10)
 
-This 12-week course provides a comprehensive journey from traditional UIKit development to modern SwiftUI approaches. Students will gain practical experience with both frameworks, understanding when and why to use each in real-world iOS development.
+#### Week 8: Dashboard & Cross-Module Integration
+- **Topic:** Creating a unified home screen showing all data
+- **Lesson Breakdown:**
+    - Building a dashboard tab with summary cards
+    - Showing recent transactions, upcoming activities, latest journal entry
+    - Displaying total profit/loss for current month
+    - Creating "Quick Actions" buttons for common tasks
+    - **Live Coding:** Build a dashboard that pulls data from all four modules
+- **Mini-Project:**
+    - Create a Home tab with 4-6 summary cards
+    - Add navigation from each card to the relevant tab
+    - Show upcoming reminders for the next 7 days
 
-### Key Learning Outcomes:
-- Master Swift programming fundamentals
-- Build responsive iOS interfaces with UIKit
-- Transition to declarative UI with SwiftUI
-- Understand data flow and state management
-- Implement navigation patterns in both frameworks
-- Integrate UIKit and SwiftUI components
-- Prepare apps for App Store submission
+#### Week 9: Advanced UI & Animations
+- **Topic:** Making the app feel polished and professional
+- **Lesson Breakdown:**
+    - Creating custom `ViewModifier`s for consistent styling
+    - Building reusable components: `FarmCard`, `PrimaryButton`, `SectionHeader`
+    - Adding subtle animations: fade-in for lists, scale for buttons
+    - Implementing pull-to-refresh and loading states
+    - Dark mode support and accessibility
+    - **Live Coding:** Refactor the app with a design system and add animations
+- **Mini-Project:**
+    - Create a design system file with colors, fonts, spacing
+    - Build 3 reusable components and replace throughout app
+    - Add at least 3 animations (list appearance, button taps, transitions)
 
-### Prerequisites:
-- Basic programming knowledge
-- macOS computer for Xcode development
-- iPhone or iPad for testing (simulator available)
+#### Week 10: Data Export & Reports
+- **Topic:** Generating useful reports for farmers
+- **Lesson Breakdown:**
+    - Creating monthly profit/loss reports with charts (Swift Charts)
+    - Exporting data as CSV or PDF for sharing
+    - Implementing `UIActivityViewController` for sharing reports
+    - Building a simple PDF generator with `PDFKit`
+    - **Live Coding:** Add a Reports section to Finance tab with charts and export
+- **Mini-Project:**
+    - Create a monthly profit chart using Swift Charts
+    - Add "Share Report" button that exports CSV
+    - Generate a simple PDF summary of the month
 
 ---
-### 🔗 The Swift Programming Language : [link](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/aboutswift)
-### 🔗 SwiftUI : [link](https://developer.apple.com/documentation/swiftui)
 
+### Phase 4: Distribution & Completion (Weeks 11-12)
 
-*Note: This course outline is designed to provide hands-on experience with both traditional and modern iOS development approaches, ensuring graduates are prepared for current industry needs.*
-# Git command(example)
-1. check status files : <br>
-`git status`
-2. Stage your changes (select files to commit)<br>
-`git add Product.swift ProductTest.swift or git add . `
+#### Week 11: Backup & Restore (Instead of Unit Testing)
+- **Topic:** Helping farmers never lose their valuable data
+- **Lesson Breakdown:**
+    - Understanding the importance of data backup for farmers
+    - Implementing export/import of all SwiftData to JSON
+    - Using `UIDocumentPicker` to save/load backup files
+    - Adding automatic reminder to backup weekly
+    - Cloud backup basics (iCloud Drive integration)
+    - **Live Coding:** Build a Backup & Restore section in Settings
+- **Mini-Project:**
+    - Complete backup feature that exports all data to JSON
+    - Implement restore that clears and imports from backup
+    - Test backup/restore across multiple devices
 
-3. Commit your changes to local history with a message<br>
-`git commit -m "Complete Product struct lab activity"`
+#### Week 12: Final Polish & TestFlight Distribution
+- **Topic:** Preparing for real farmer testing
+- **Lesson Breakdown:**
+    - Adding app icon and launch screen (farm-themed)
+    - Configuring app name and bundle ID
+    - TestFlight setup for beta testing
+    - Creating a simple user guide within the app
+    - Planning for feedback collection
+    - **Live Coding:** Prepare and archive app for TestFlight
+- **Final Project:**
+    - Complete all remaining polish items
+    - Submit app to TestFlight
+    - Prepare final presentation/demo
+    - Write README with features and architecture
 
-4. Commit your changes to local history with a message<br>
-`git status`
+---
 
-5. Push your local commits to GitHub<br>
-`git push origin develop`
+## 🎯 Summary: What Students Will Build
+
+By the end of this 12-week course, students will have a **complete, production-ready agricultural app** with:
+
+| Module | Features | Week Completed |
+|--------|----------|----------------|
+| **Finance Tracker** | Income/expense tracking, profit reports, categories | Week 4 |
+| **Calendar & Reminders** | Activity scheduling, local notifications | Week 5 |
+| **Pest & Disease Guide** | Offline reference library with search | Week 6 |
+| **Daily Journal** | Notes with photos and weather | Week 7 |
+| **Dashboard** | Unified view of all farm data | Week 8 |
+| **Reports & Charts** | Visual profit/loss analysis | Week 10 |
+| **Backup & Restore** | Data safety and portability | Week 11 |
+| **TestFlight** | Real-world testing with farmers | Week 12 |
+
+---
+
+## ✅ Why This Works Perfectly for Your Course
+
+1. **Unified project** - Students build ONE impressive app, not four small ones
+2. **Progressive complexity** - Each week adds new skills while reinforcing old ones
+3. **Real-world value** - Actual farmers could use this app
+4. **Portfolio-ready** - A complete app with multiple features demonstrates comprehensive skills
+5. **Cultural relevance** - Designed specifically for Cambodian small-scale farmers
+6. **SMART goals met** - Specific, Measurable, Achievable, Realistic, Timely
