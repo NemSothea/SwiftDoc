@@ -16,7 +16,7 @@ class CoreDataManager {
     
     // Reference to AppDelegate's persistent container
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "SmartFarmerModel")
+        let container = NSPersistentContainer(name: "SmartFarmerAssistantFinish")
         container.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Unable to load Core Data stack: \(error)")

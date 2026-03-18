@@ -10,22 +10,14 @@ import CoreData
 
 @main
 struct SmartFarmerAssistantFinishApp: App {
-    
-    // Core Data Persistent Container
-    let persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "SmartFarmerAssistantFinish")
-        container.loadPersistentStores { description, error in
-            if let error = error {
-                fatalError("Failed to load Core Data stack: \(error)")
-            }
-        }
-        return container
-    }()
+
+    // Use the shared CoreDataManager — do NOT create a second container
+    let context = CoreDataManager.shared.context
 
     var body: some Scene {
         WindowGroup {
             MainTabView()
-                .environment(\.managedObjectContext, persistentContainer.viewContext)
+                .environment(\.managedObjectContext, context)
         }
     }
 }

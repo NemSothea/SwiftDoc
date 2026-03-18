@@ -16,6 +16,7 @@ struct FinanceTabView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var showingAddTransaction = false
+    @State private var selectedTransaction: Transaction? = nil
     @State private var filterType = "all"
     
     // Fetch all transactions
@@ -23,18 +24,6 @@ struct FinanceTabView: View {
         entity: Transaction.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Transaction.date, ascending: false)]
     ) var allTransactions: FetchedResults<Transaction>
-    
-    // Filtered transactions based on selection
-    var displayedTransactions: [Transaction] {
-        switch filterType {
-        case "expense":
-            return allTransactions.filter { $0.type == "expense" }
-        case "income":
-            return allTransactions.filter { $0.type == "income" }
-        default:
-            return Array(allTransactions)
-        }
-    }
     
     // Calculate totals
     var totalIncome: Double {
@@ -54,7 +43,7 @@ struct FinanceTabView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack(spacing: 0) {
                 // Summary Cards
                 HStack(spacing: 12) {
@@ -90,12 +79,19 @@ struct FinanceTabView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal)
                 
-                // Transactions List
-                List {
-                    ForEach(displayedTransactions, id: \.self) { transaction in
-                        TransactionRowView(transaction: transaction, viewModel: viewModel)
-                    }
-                    .onDelete(perform: deleteTransactions)
+                // Transactions List — database-level filtering via NSPredicate
+                // Delete is handled inside FilteredTransactionList
+                // Tap opens EditTransactionView via selectedTransaction
+                FilteredTransactionList(
+                    filterType: filterType,
+                    viewModel: viewModel,
+                    onTap: { selectedTransaction = $0 }
+                )
+                .environment(\.managedObjectContext, viewContext)
+                .sheet(item: $selectedTransaction) { transaction in
+                    EditTransactionView(transaction: transaction)
+                        .environment(\.managedObjectContext, viewContext)
+                        .environmentObject(viewModel)
                 }
             }
             .navigationTitle("កំណត់ត្រាចំណាយចំណូល")
@@ -109,22 +105,11 @@ struct FinanceTabView: View {
             .sheet(isPresented: $showingAddTransaction) {
                 AddTransactionView()
                     .environment(\.managedObjectContext, viewContext)
+                    .environmentObject(viewModel)
             }
         }
     }
     
-    private func deleteTransactions(offsets: IndexSet) {
-        for index in offsets {
-            let transaction = displayedTransactions[index]
-            viewContext.delete(transaction)
-        }
-        
-        do {
-            try viewContext.save()
-        } catch {
-            print("Error deleting transaction: \(error)")
-        }
-    }
 }
 
 struct SummaryCard: View {
@@ -133,7 +118,7 @@ struct SummaryCard: View {
     let color: Color
     let icon: String
     
-    @Environment(FarmViewModel.self) private var viewModel
+    @EnvironmentObject private var viewModel: FarmViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

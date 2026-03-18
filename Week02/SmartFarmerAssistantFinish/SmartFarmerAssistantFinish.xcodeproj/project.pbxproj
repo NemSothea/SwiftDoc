@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		16562FE82F6A524D00F0901E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 16562FE72F6A524D00F0901E /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		16562FE72F6A524D00F0901E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		168DA70A2F698B1B005B3743 /* SmartFarmerAssistantFinish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SmartFarmerAssistantFinish.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		168DA7012F698B1B005B3743 = {
 			isa = PBXGroup;
 			children = (
+				16562FE72F6A524D00F0901E /* README.md */,
 				168DA70C2F698B1B005B3743 /* SmartFarmerAssistantFinish */,
 				168DA70B2F698B1B005B3743 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16562FE82F6A524D00F0901E /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +274,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SmartFarmerAssistantFinish;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kh.SmartFarmerAssistantFinish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -296,7 +303,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.SmartFarmerAssistantFinish;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kh.SmartFarmerAssistantFinish;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

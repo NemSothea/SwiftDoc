@@ -12,4 +12,10 @@ import CoreData
 @objc(Transaction)
 public class Transaction: NSManagedObject {
 
+    var isExpense: Bool { type == "expense" }
+    var isIncome: Bool { type == "income" }
+
+    var categoryName: String {
+        category ?? ""
+    }
 }

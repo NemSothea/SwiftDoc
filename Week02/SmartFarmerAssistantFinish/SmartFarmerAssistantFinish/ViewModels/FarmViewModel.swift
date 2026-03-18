@@ -34,16 +34,15 @@ class FarmViewModel : ObservableObject {
     // Read - Usually done with @FetchRequest in views
     
     // Update
-    func updateTransaction(_ transaction: Transaction, 
-                          amount: Double? = nil,
-                          note: String? = nil) {
-        if let amount = amount {
-            transaction.amount = amount
-        }
-        if let note = note {
-            transaction.note = note
-        }
-        
+    func updateTransaction(_ transaction: Transaction,
+                           amount: Double,
+                           note: String,
+                           type: String,
+                           category: String) {
+        transaction.amount = amount
+        transaction.note = note
+        transaction.type = type
+        transaction.category = category
         saveContext()
     }
     
@@ -73,12 +72,19 @@ class FarmViewModel : ObservableObject {
     
     // MARK: - Helper Methods
     
+    func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
+    }
+
     func formatCurrency(_ amount: Double) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencySymbol = "៛"
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: amount)) ?? "៛0"
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: amount)) ?? "$0.00"
     }
     
     // Get total balance (would normally use aggregation)

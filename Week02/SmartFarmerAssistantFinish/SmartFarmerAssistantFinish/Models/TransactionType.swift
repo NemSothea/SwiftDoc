@@ -8,7 +8,6 @@
 
 // Models/Transaction.swift
 import Foundation
-import SwiftData
 
 enum TransactionType: String, CaseIterable {
     case expense = "ចំណាយ"      // Expense
