@@ -1,40 +1,42 @@
 # 🗓️ Complete 12-Week Intermediate Course Outline
 
+> **Minimum Deployment Target: iOS 13+** — All APIs and frameworks used in this course are compatible with iOS 13 and above.
+
 ### Phase 1: Foundation & Architecture (Weeks 1-3)
 
 #### Week 1: Project Setup & MVVM Architecture
 - **Topic:** Laying the foundation with clean architecture
 - **Lesson Breakdown:**
-    - Setting up the Xcode project with proper folder structure
-    - Introduction to MVVM with the new `@Observable` macro (iOS 17+)
+    - Setting up the Xcode project with proper folder structure and iOS 13+ deployment target
+    - Introduction to MVVM with `ObservableObject` and `@Published` properties (iOS 13+)
     - Creating the core data models: `Transaction`, `FarmActivity`, `Pest`, `JournalEntry`
     - Building a `FarmManager` (main view model) to coordinate all features
-    - **Live Coding:** Create all data models and the main `FarmViewModel` class
+    - **Live Coding:** Create all data models and the main `FarmViewModel` class using `ObservableObject`
 - **Mini-Project:**
     - Set up the project with folders: `Models`, `ViewModels`, `Views`, `Utilities`
-    - Implement the `FarmViewModel` with empty arrays for each data type
+    - Implement the `FarmViewModel` with `@Published` arrays for each data type
     - Create a main tab view with placeholders for 4 tabs (Finance, Calendar, Guide, Journal)
 
-#### Week 2: SwiftData Persistence
-- **Topic:** Saving data permanently with SwiftData
+#### Week 2: CoreData Persistence
+- **Topic:** Saving data permanently with CoreData (iOS 13+)
 - **Lesson Breakdown:**
-    - Converting models to SwiftData `@Model` classes
-    - Setting up the `modelContainer` and `modelContext`
-    - Understanding `@Query` for automatic UI updates
-    - Basic CRUD operations (Create, Read, Update, Delete)
-    - **Live Coding:** Convert all four models to SwiftData, test saving and fetching
+    - Setting up the `.xcdatamodeld` schema for all four models
+    - Configuring `NSPersistentContainer` and `NSManagedObjectContext`
+    - Using `@FetchRequest` for automatic UI updates
+    - Basic CRUD operations (Create, Read, Update, Delete) with CoreData
+    - **Live Coding:** Implement all four CoreData entities, test saving and fetching
 - **Mini-Project:**
-    - Complete SwiftData implementation for all models
-    - Add sample data on first launch
+    - Complete CoreData implementation for all models
+    - Add sample data on first launch using a seed method
     - Verify data persists after app restart
 
-#### Week 3: Programmatic Navigation & Tab Coordination
+#### Week 3: Navigation & Tab Coordination
 - **Topic:** Building a professional navigation system
 - **Lesson Breakdown:**
-    - `NavigationStack` and `NavigationPath` for each tab
-    - Creating a `NavigationCoordinator` to manage navigation state
+    - `NavigationView` and `NavigationLink` for each tab (iOS 13+)
+    - Creating a `NavigationCoordinator` using `@State` and `@Binding` to manage navigation state
     - Passing data between screens (e.g., from list to detail)
-    - Deep linking simulation: Opening to a specific transaction
+    - Deep linking simulation: Opening to a specific transaction via `NavigationLink` tag/selection
     - **Live Coding:** Build a navigation system where each tab has independent navigation state
 - **Mini-Project:**
     - Implement a `NavigationCoordinator` for the Finance tab
@@ -75,25 +77,25 @@
 #### Week 6: Pest & Disease Guide Module (Project 3)
 - **Topic:** Building an offline reference library
 - **Lesson Breakdown:**
-    - Designing the `Pest` model with name, symptoms, treatment, image name
-    - Creating a searchable list with `searchable` modifier
-    - Implementing detail view with expandable sections
-    - Pre-loading data from JSON file on first launch
+    - Designing the `Pest` CoreData entity with name, symptoms, treatment, image name
+    - Creating a searchable list with a custom `TextField` search bar (iOS 13+, no `.searchable` dependency)
+    - Implementing detail view with expandable sections using `@State` toggles
+    - Pre-loading data from a bundled JSON file on first launch
     - Making it work completely offline
     - **Live Coding:** Build the Pest Guide tab with search and category filtering
 - **Mini-Project:**
     - Create a JSON file with at least 10 pests/diseases
-    - Load this data into SwiftData on first launch
+    - Load this data into CoreData on first launch
     - Implement search and category tabs (Insects, Fungal, Bacterial)
 
 #### Week 7: Daily Journal Module (Project 4)
 - **Topic:** Digital notebook with rich text and weather
 - **Lesson Breakdown:**
-    - Building the `JournalEntry` model with date, content, weather, photos
+    - Building the `JournalEntry` CoreData entity with date, content, weather, photos
     - Creating a timeline view of entries (reverse chronological)
     - Implementing weather selection (Sunny, Rainy, Cloudy, Windy)
-    - Adding photos from library with `PhotosPicker`
-    - Search and filter by date/weather
+    - Adding photos from library using `UIImagePickerController` wrapped in `UIViewControllerRepresentable` (iOS 13+)
+    - Search and filter by date/weather using a custom `TextField` search bar
     - **Live Coding:** Build the Journal tab with entry list and add/edit screen
 - **Mini-Project:**
     - Complete Journal tab with photo attachment
@@ -134,13 +136,13 @@
 #### Week 10: Data Export & Reports
 - **Topic:** Generating useful reports for farmers
 - **Lesson Breakdown:**
-    - Creating monthly profit/loss reports with charts (Swift Charts)
+    - Creating monthly profit/loss reports with custom bar charts built using `GeometryReader` and `Shape` (iOS 13+, no Swift Charts dependency)
     - Exporting data as CSV or PDF for sharing
-    - Implementing `UIActivityViewController` for sharing reports
-    - Building a simple PDF generator with `PDFKit`
+    - Implementing `UIActivityViewController` for sharing reports (iOS 13+)
+    - Building a simple PDF generator with `PDFKit` (iOS 11+)
     - **Live Coding:** Add a Reports section to Finance tab with charts and export
 - **Mini-Project:**
-    - Create a monthly profit chart using Swift Charts
+    - Create a monthly profit bar chart using `GeometryReader` and `Rectangle` shapes
     - Add "Share Report" button that exports CSV
     - Generate a simple PDF summary of the month
 
@@ -152,14 +154,14 @@
 - **Topic:** Helping farmers never lose their valuable data
 - **Lesson Breakdown:**
     - Understanding the importance of data backup for farmers
-    - Implementing export/import of all SwiftData to JSON
-    - Using `UIDocumentPicker` to save/load backup files
+    - Implementing export/import of all CoreData records to JSON
+    - Using `UIDocumentPickerViewController` wrapped in `UIViewControllerRepresentable` to save/load backup files (iOS 13+)
     - Adding automatic reminder to backup weekly
     - Cloud backup basics (iCloud Drive integration)
     - **Live Coding:** Build a Backup & Restore section in Settings
 - **Mini-Project:**
-    - Complete backup feature that exports all data to JSON
-    - Implement restore that clears and imports from backup
+    - Complete backup feature that exports all CoreData records to JSON
+    - Implement restore that clears and re-imports from backup file
     - Test backup/restore across multiple devices
 
 #### Week 12: Final Polish & TestFlight Distribution
