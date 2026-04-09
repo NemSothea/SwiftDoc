@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild -project SmartFarmerAssistantFinish.xcodeproj -scheme SmartFarmerAssistantFinish -destination 'platform=iOS Simulator,name=iPhone 16' build)",
+      "Bash(xcodebuild -project SmartFarmerAssistantFinish.xcodeproj -scheme SmartFarmerAssistantFinish -destination 'platform=iOS Simulator,id=EBFA51F4-A202-4833-BF1A-4E94B925316A' build)"
+    ]
+  }
+}
