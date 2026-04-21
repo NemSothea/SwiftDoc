@@ -25,6 +25,10 @@ By the end of this week, students will be able to:
 | Pass ViewModel | `.environment(vm)` | `.environmentObject(vm)` |
 | Navigation | `NavigationStack` | `NavigationView` |
 
+> `NavigationView` is deprecated from iOS 16 but still works. This course
+> stays with it for broad device support; for iOS 16+ only projects, prefer
+> `NavigationStack`.
+
 ---
 
 **Lesson Breakdown:**
@@ -51,19 +55,20 @@ CalendarTabView
 ├── CalendarGridView          ← month grid (prev / next)
 │   └── DayCellView           ← one cell per day (selected, today, has-activities)
 ├── Activity list              ← filtered by selectedDate
-│   └── ActivityRowView        ← one row per activity
-└── AddActivityView (sheet)    ← pre-filled with selectedDate
+│   └── ActivityRowContent     ← one row per activity (inside a NavigationLink)
+├── AddActivityView (sheet)    ← pre-filled with the tapped date
+├── EditActivityView (sheet)   ← opened from ActivityDetailView
+└── ActivityDetailView         ← pushed via NavigationLink from a row
 ```
 
 **CalendarTabView — main container:**
 
 ```swift
-// Views/CalendarTabView.swift
+// CalendarReminders/Views/CalendarTabView.swift
 import SwiftUI
 import CoreData
 
 struct CalendarTabView: View {
-    @EnvironmentObject private var viewModel: FarmViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -108,7 +113,28 @@ struct CalendarTabView: View {
                 } else {
                     List {
                         ForEach(activitiesForSelectedDate, id: \.self) { activity in
-                            ActivityRowView(activity: activity, viewModel: viewModel)
+                            // Toggle button is kept OUTSIDE the NavigationLink so
+                            // tapping the checkbox doesn't also push the detail view.
+                            HStack(spacing: 12) {
+                                Button {
+                                    activity.isCompleted.toggle()
+                                    if activity.isCompleted,
+                                       activity.reminderEnabled,
+                                       let id = activity.id {
+                                        NotificationManager.shared.cancelNotification(for: id)
+                                    }
+                                    try? activity.managedObjectContext?.save()
+                                } label: {
+                                    Image(systemName: activity.isCompleted
+                                          ? "checkmark.circle.fill" : "circle")
+                                        .foregroundColor(activity.isCompleted ? .green : .gray)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+
+                                NavigationLink(destination: ActivityDetailView(activity: activity)) {
+                                    ActivityRowContent(activity: activity, viewModel: viewModel)
+                                }
+                            }
                         }
                         .onDelete(perform: deleteActivities)
                     }
@@ -123,7 +149,7 @@ struct CalendarTabView: View {
                 }
             }
             .sheet(isPresented: $showingAddActivity) {
-                AddActivityView(selectedDate: selectedDate)
+                AddActivityView(initialDate: selectedDate)
                     .environment(\.managedObjectContext, viewContext)
                     .environmentObject(viewModel)
             }
@@ -143,9 +169,9 @@ struct CalendarTabView: View {
     private func deleteActivities(offsets: IndexSet) {
         let toDelete = offsets.map { activitiesForSelectedDate[$0] }
         for activity in toDelete {
-            // Remove scheduled notification before deleting
+            // Cancel scheduled notification before deleting the row
             if activity.reminderEnabled, let id = activity.id {
-                NotificationManager.shared.removeNotification(id: id)
+                NotificationManager.shared.cancelNotification(for: id)
             }
             viewContext.delete(activity)
         }
@@ -166,81 +192,134 @@ struct CalendarGridView: View {
     @Binding var selectedDate: Date
     let activities: FetchedResults<FarmActivity>
 
+    // Two separate pieces of state:
+    //   selectedDate  — which day the user picked (drives the activity list)
+    //   displayedMonth — which month the grid is currently showing
+    // Keeping them apart means the ‹ › chevrons don't move the user's selection.
+    @State private var displayedMonth = Date()
+
     private let calendar = Calendar.current
-    private let daysOfWeek = ["អា", "ច", "អ", "ព", "ព្រ", "សុ", "ស"]
+    private let daysOfWeek = ["អា", "ច", "អ", "ពុ", "ព្រ", "សុ", "ស"]
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
 
-    private var monthTitle: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: selectedDate)
-    }
-
-    /// Build array of optional dates — leading nils are blank cells before the 1st
-    private var daysInMonth: [Date?] {
-        let comps = calendar.dateComponents([.year, .month], from: selectedDate)
-        guard let firstOfMonth = calendar.date(from: comps),
-              let range = calendar.range(of: .day, in: .month, for: firstOfMonth)
-        else { return [] }
-
-        let weekday = calendar.component(.weekday, from: firstOfMonth)
-        var days: [Date?] = Array(repeating: nil, count: weekday - 1)
-        for day in range {
-            days.append(calendar.date(byAdding: .day, value: day - 1, to: firstOfMonth))
-        }
-        return days
-    }
-
-    private func hasActivities(on date: Date) -> Bool {
-        activities.contains { activity in
-            guard let d = activity.date else { return false }
-            return calendar.isDate(d, inSameDayAs: date)
-        }
-    }
-
     var body: some View {
-        VStack(spacing: 12) {
-            // Month header with prev / next
+        VStack(spacing: 10) {
+            // Month / year header with prev / next
             HStack {
-                Button(action: { changeMonth(by: -1) }) {
+                Button(action: previousMonth) {
                     Image(systemName: "chevron.left")
                 }
                 Spacer()
-                Text(monthTitle).font(.headline)
+                VStack(spacing: 2) {
+                    Text(monthYearString).font(.title3.bold())
+                    Text(yearString).font(.caption).foregroundColor(.secondary)
+                }
                 Spacer()
-                Button(action: { changeMonth(by: 1) }) {
+                Button(action: nextMonth) {
                     Image(systemName: "chevron.right")
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 4)
 
-            // 7-column LazyVGrid
-            LazyVGrid(columns: columns, spacing: 8) {
-                // Day-of-week headers
+            // Day-of-week headers
+            LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(daysOfWeek, id: \.self) { day in
-                    Text(day).font(.caption).foregroundColor(.gray)
+                    Text(day).font(.caption.bold()).foregroundColor(.gray)
                 }
-                // Day cells
-                ForEach(daysInMonth.indices, id: \.self) { index in
-                    if let date = daysInMonth[index] {
-                        DayCellView(
-                            date: date,
-                            isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
-                            isToday: calendar.isDateInToday(date),
-                            hasActivities: hasActivities(on: date)
-                        )
-                        .onTapGesture { selectedDate = date }
-                    } else {
-                        Text("").frame(height: 36)  // blank leading cell
-                    }
+            }
+
+            // Day cells — blank leading cells then 1…numberOfDaysInMonth
+            LazyVGrid(columns: columns, spacing: 4) {
+                ForEach((-firstWeekdayOffset)..<0, id: \.self) { _ in
+                    Color.clear.frame(height: 44)
                 }
+                ForEach(1...numberOfDaysInMonth, id: \.self) { day in
+                    DayCellView(
+                        day: day,
+                        isToday: isToday(day),
+                        isSelected: isSelected(day),
+                        hasActivities: hasActivities(on: day)
+                    )
+                    .onTapGesture { selectDay(day) }
+                }
+            }
+        }
+        // If selectedDate is changed externally (e.g. from a notification tap)
+        // and falls in a different month, follow it.
+        .onChange(of: selectedDate) { newDate in
+            let sel  = calendar.dateComponents([.year, .month], from: newDate)
+            let disp = calendar.dateComponents([.year, .month], from: displayedMonth)
+            if sel.year != disp.year || sel.month != disp.month {
+                displayedMonth = newDate
             }
         }
     }
 
-    private func changeMonth(by value: Int) {
-        if let newDate = calendar.date(byAdding: .month, value: value, to: selectedDate) {
-            selectedDate = newDate
+    // MARK: - Calendar math (all derive from displayedMonth)
+
+    private var monthYearString: String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "MMMM"
+        fmt.locale = Locale(identifier: "km_KH")
+        return fmt.string(from: displayedMonth)
+    }
+
+    private var yearString: String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy"
+        return fmt.string(from: displayedMonth)
+    }
+
+    private var firstDayOfMonth: Date {
+        calendar.date(from: calendar.dateComponents([.year, .month], from: displayedMonth))!
+    }
+
+    private var firstWeekdayOffset: Int {
+        // Sunday = 1, so subtract 1 to get the number of leading blank cells
+        calendar.component(.weekday, from: firstDayOfMonth) - 1
+    }
+
+    private var numberOfDaysInMonth: Int {
+        calendar.range(of: .day, in: .month, for: displayedMonth)!.count
+    }
+
+    private func dateFor(_ day: Int) -> Date? {
+        var comps = calendar.dateComponents([.year, .month], from: displayedMonth)
+        comps.day = day
+        return calendar.date(from: comps)
+    }
+
+    private func isToday(_ day: Int) -> Bool {
+        guard let d = dateFor(day) else { return false }
+        return calendar.isDateInToday(d)
+    }
+
+    private func isSelected(_ day: Int) -> Bool {
+        guard let d = dateFor(day) else { return false }
+        return calendar.isDate(d, inSameDayAs: selectedDate)
+    }
+
+    private func hasActivities(on day: Int) -> Bool {
+        guard let d = dateFor(day) else { return false }
+        return activities.contains { activity in
+            guard let aDate = activity.date else { return false }
+            return calendar.isDate(aDate, inSameDayAs: d)
+        }
+    }
+
+    private func selectDay(_ day: Int) {
+        if let d = dateFor(day) { selectedDate = d }
+    }
+
+    private func previousMonth() {
+        if let m = calendar.date(byAdding: .month, value: -1, to: displayedMonth) {
+            displayedMonth = m
+        }
+    }
+
+    private func nextMonth() {
+        if let m = calendar.date(byAdding: .month, value: 1, to: displayedMonth) {
+            displayedMonth = m
         }
     }
 }
@@ -250,41 +329,53 @@ struct CalendarGridView: View {
 
 ```swift
 struct DayCellView: View {
-    let date: Date
-    let isSelected: Bool
+    let day: Int
     let isToday: Bool
+    let isSelected: Bool
     let hasActivities: Bool
 
     var body: some View {
         VStack(spacing: 2) {
-            Text("\(Calendar.current.component(.day, from: date))")
-                .font(.system(size: 14))
-                .frame(width: 32, height: 32)
-                .background(
-                    Circle()
-                        .fill(isSelected ? Color.blue
-                              : isToday ? Color.blue.opacity(0.2)
-                              : Color.clear)
-                )
-                .foregroundColor(isSelected ? .white : .primary)
+            Text("\(day)")
+                .font(.system(size: 15, weight: isToday ? .bold : .regular))
+                .foregroundColor(textColor)
+                .frame(width: 34, height: 34)
+                .background(bgColor)
+                .clipShape(Circle())
 
-            // Green dot when the date has activities
+            // Green dot when the day has activities
             Circle()
                 .fill(hasActivities ? Color.green : Color.clear)
                 .frame(width: 6, height: 6)
         }
+        .frame(height: 44)
+    }
+
+    // Selected must win over today's highlight — keep this order.
+    private var textColor: Color {
+        if isSelected { return .white }
+        if isToday    { return .blue }
+        return .primary
+    }
+
+    private var bgColor: Color {
+        if isSelected { return .blue }
+        if isToday    { return Color.blue.opacity(0.15) }
+        return .clear
     }
 }
 ```
 
 > **How the grid works:**
 >
-> 1. `daysInMonth` builds an array with `nil` placeholders for days before the 1st
->    (e.g. if the 1st is Wednesday, indices 0-2 are `nil`).
-> 2. `LazyVGrid` with 7 columns wraps them into a calendar layout.
-> 3. A green dot under a day means at least one `FarmActivity.date` falls on that day.
+> 1. `firstWeekdayOffset` produces the number of blank leading cells (e.g. if
+>    the 1st is Wednesday, we render 3 blanks before day 1).
+> 2. `LazyVGrid` with 7 columns wraps the blanks + days into a calendar layout.
+> 3. A green dot under a day means at least one `FarmActivity.date` falls on it.
 > 4. `selectedDate` is `@Binding` — tapping a day updates the parent's state,
 >    which re-filters the activity list.
+> 5. `displayedMonth` is `@State` local to the grid, so the ‹ › chevrons scroll
+>    the visible month **without** changing the user's selection.
 
 ---
 
@@ -295,7 +386,7 @@ Below are the manual model files — set Codegen to **"Manual/None"** in the
 Data Model Inspector to avoid duplicate symbols.
 
 ```swift
-// Models/FarmActivity+CoreDataClass.swift
+// CalendarReminders/Models/FarmActivity+CoreDataClass.swift
 import Foundation
 import CoreData
 
@@ -306,7 +397,7 @@ public class FarmActivity: NSManagedObject {
 ```
 
 ```swift
-// Models/FarmActivity+CoreDataProperties.swift
+// CalendarReminders/Models/FarmActivity+CoreDataProperties.swift
 import Foundation
 import CoreData
 
@@ -337,45 +428,42 @@ extension FarmActivity: Identifiable {}
 | `isCompleted` | Bool | Checkbox state |
 | `reminderEnabled` | Bool | Whether a local notification is scheduled |
 
-**ActivityRowView — uses `@ObservedObject` for instant UI updates:**
+**ActivityRowContent — the row content used inside the NavigationLink:**
 
-> Use `@ObservedObject` (not `let`) so the view re-renders instantly
-> when `isCompleted` is toggled — same pattern as `TransactionRowView`.
+> In `CalendarTabView`, the checkbox button is built in the parent so the
+> `NavigationLink` only wraps the row content. `ActivityRowContent` below
+> focuses on the title / type / time / reminder-bell layout.
 
 ```swift
-struct ActivityRowView: View {
+struct ActivityRowContent: View {
     @ObservedObject var activity: FarmActivity
-    let viewModel: FarmViewModel
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: activity.isCompleted ? "checkmark.circle.fill" : "circle")
-                .foregroundColor(activity.isCompleted ? .green : .gray)
-                .font(.title2)
-                .onTapGesture {
-                    activity.isCompleted.toggle()
-                    try? activity.managedObjectContext?.save()
-                }
-
             VStack(alignment: .leading, spacing: 4) {
                 Text(activity.title ?? "")
                     .font(.headline)
                     .strikethrough(activity.isCompleted)
+                    .foregroundColor(activity.isCompleted ? .gray : .primary)
 
-                Text(activity.activityType ?? "")
-                    .font(.caption)
-                    .foregroundColor(.blue)
+                HStack(spacing: 6) {
+                    Label(activity.activityType ?? "",
+                          systemImage: iconForType(activity.activityType))
+                        .font(.caption)
+                        .foregroundColor(.blue)
 
-                if let date = activity.date {
-                    Text(viewModel.formatDate(date))
-                        .font(.caption2)
-                        .foregroundColor(.gray)
+                    if let date = activity.date {
+                        Text(timeString(from: date))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 if let notes = activity.notes, !notes.isEmpty {
                     Text(notes)
                         .font(.caption)
                         .foregroundColor(.gray)
+                        .lineLimit(2)
                 }
             }
 
@@ -389,8 +477,29 @@ struct ActivityRowView: View {
         }
         .padding(.vertical, 4)
     }
+
+    private func timeString(from date: Date) -> String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "HH:mm"
+        return fmt.string(from: date)
+    }
+
+    /// Map Khmer activity types to SF Symbols. Keep in sync with `activityTypes`
+    /// in AddActivityView / EditActivityView.
+    private func iconForType(_ type: String?) -> String {
+        switch type {
+        case "ដាំដំណាំ":  return "leaf.fill"
+        case "ស្រោចទឹក":  return "drop.fill"
+        case "បាញ់ថ្នាំ":   return "sprinkler.and.droplets"
+        case "ច្រូតកាត់":  return "scissors"
+        default:           return "ellipsis.circle"
+        }
+    }
 }
 ```
+
+> Use `@ObservedObject` (not `let`) so the view re-renders instantly when
+> `isCompleted` is toggled — same pattern as `TransactionRowView`.
 
 ---
 
@@ -406,73 +515,102 @@ the stored answer.
 App launches
     │
     ▼
-AppDelegate.didFinishLaunching
+NotificationManager.shared is created as @StateObject
+    │  (its init sets itself as UNUserNotificationCenter delegate)
+    │
+    ▼
+User toggles "បើកការរំលឹក" on an activity
     │
     ▼
 NotificationManager.requestPermission()
     │
     ▼
-iOS shows permission dialog (first time only)
+iOS shows the permission dialog (first time only)
     │
-    ├── User taps "Allow"  → granted = true  → notifications work
-    └── User taps "Don't Allow" → granted = false → reminders silently skip
+    ├── User taps "Allow"  → isAuthorized = true  → notifications work
+    └── User taps "Don't Allow" → isAuthorized = false → show a "open Settings" alert
 ```
 
-**NotificationManager — singleton utility:**
+> **No AppDelegate needed.** The shipped app is pure SwiftUI — permissions,
+> scheduling, and delegate callbacks all live inside `NotificationManager`,
+> which is instantiated at the top of the `App` struct.
+
+**NotificationManager — singleton + delegate + observable:**
 
 ```swift
-// Utilities/NotificationManager.swift
+// CalendarReminders/Services/NotificationManager.swift
 import Foundation
 import UserNotifications
+import CoreData
 
-class NotificationManager {
+class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
+
     static let shared = NotificationManager()
+
+    // Published so views (e.g. a Settings screen) can react to permission changes
+    @Published var isAuthorized = false
+
+    private override init() {
+        super.init()
+        // Register as the delegate immediately, BEFORE any notification arrives
+        UNUserNotificationCenter.current().delegate = self
+        checkAuthorization()
+    }
 
     // MARK: - Request Permission
 
-    func requestPermission(completion: @escaping (Bool) -> Void) {
+    func requestPermission(completion: @escaping (Bool) -> Void = { _ in }) {
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .badge, .sound]
-        ) { granted, error in
+        ) { granted, _ in
             DispatchQueue.main.async {
+                self.isAuthorized = granted
                 completion(granted)
+            }
+        }
+    }
+
+    /// Re-check on every app foreground — the user may have toggled
+    /// notifications in Settings while the app was backgrounded.
+    func checkAuthorization() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                self.isAuthorized = settings.authorizationStatus == .authorized
             }
         }
     }
 ```
 
 > **Why `DispatchQueue.main.async`?**
-> `requestAuthorization` calls back on a background thread.
-> Any UI update (e.g. showing an alert) must happen on the main thread.
+> `requestAuthorization` and `getNotificationSettings` both call back on a
+> background thread. Mutating `@Published` state (which drives SwiftUI) must
+> happen on the main thread.
 
-**Requesting permission at app launch:**
+**Wiring the manager into the App struct:**
 
 ```swift
 // SmartFarmerAssistantFinishApp.swift
 import SwiftUI
-import UserNotifications
+import CoreData
 
 @main
 struct SmartFarmerAssistantFinishApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let context = CoreDataManager.shared.context
+
+    // Create the manager early so its init registers the delegate
+    // before any notification can arrive.
+    @StateObject private var notificationManager = NotificationManager.shared
 
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(\.managedObjectContext, context)
+                .environmentObject(notificationManager)
+                .onAppear {
+                    // Re-check authorisation on every foreground
+                    notificationManager.checkAuthorization()
+                }
         }
-    }
-}
-
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
-        NotificationManager.shared.requestPermission { _ in }
-        return true
     }
 }
 ```
@@ -487,8 +625,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 ## 📚 Lesson 5.4: Scheduling Local Notifications with UNUserNotificationCenter (45 minutes)
 
-**When the user saves an activity with `reminderEnabled = true`,
-schedule a notification 1 hour before the activity date.**
+**When the user saves an activity with `reminderEnabled = true`, schedule a
+notification that fires at the exact reminder time the user picked.** The
+user chooses both the activity date and a separate reminder time inside
+`AddActivityView`; the two are merged into `activity.date`.
 
 **Notification scheduling flow:**
 
@@ -496,7 +636,7 @@ schedule a notification 1 hour before the activity date.**
 User taps "រក្សាទុក" (Save) in AddActivityView
     │
     ▼
-FarmActivity saved to Core Data
+FarmActivity saved to Core Data (date = day + reminderTime merged)
     │
     ▼
 if reminderEnabled {
@@ -505,13 +645,14 @@ if reminderEnabled {
     │
     ▼
 UNMutableNotificationContent created
-    │  - title: "កម្មវិធីកសិកម្ម"
+    │  - title: "🌾 កម្មវិធីកសិកម្ម"
     │  - body:  activity title + notes
     │  - userInfo: ["activityID": UUID string]
     │
     ▼
 UNCalendarNotificationTrigger
-    │  - fires 1 hour before activity.date
+    │  - fires at activity.date (year/month/day/hour/minute)
+    │  - past dates are silently skipped
     │
     ▼
 UNNotificationRequest added to UNUserNotificationCenter
@@ -520,19 +661,21 @@ UNNotificationRequest added to UNUserNotificationCenter
 iOS delivers the notification at the trigger time
 ```
 
-**NotificationManager — schedule & remove:**
+**NotificationManager — schedule & cancel:**
 
 ```swift
     // MARK: - Schedule Notification
 
     func scheduleNotification(for activity: FarmActivity) {
-        guard activity.reminderEnabled,
-              let id = activity.id,
-              let date = activity.date,
-              let title = activity.title else { return }
+        guard let id = activity.id,
+              let title = activity.title,
+              let date = activity.date else { return }
+
+        // Don't schedule notifications in the past
+        guard date > Date() else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "កម្មវិធីកសិកម្ម"
+        content.title = "🌾 កម្មវិធីកសិកម្ម"
         content.body = title
         if let notes = activity.notes, !notes.isEmpty {
             content.body += " — \(notes)"
@@ -541,11 +684,10 @@ iOS delivers the notification at the trigger time
         // Store the activity ID so we can deep-link on tap
         content.userInfo = ["activityID": id.uuidString]
 
-        // Trigger 1 hour before the activity date
-        let triggerDate = Calendar.current.date(byAdding: .hour, value: -1, to: date) ?? date
+        // Fire at the exact date + time stored on the activity
         let components = Calendar.current.dateComponents(
             [.year, .month, .day, .hour, .minute],
-            from: triggerDate
+            from: date
         )
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
 
@@ -557,11 +699,11 @@ iOS delivers the notification at the trigger time
         UNUserNotificationCenter.current().add(request)
     }
 
-    // MARK: - Remove Notification
+    // MARK: - Cancel Notification
 
-    func removeNotification(id: UUID) {
+    func cancelNotification(for activityID: UUID) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(
-            withIdentifiers: [id.uuidString]
+            withIdentifiers: [activityID.uuidString]
         )
     }
 }
@@ -590,12 +732,15 @@ struct AddActivityView: View {
     @State private var notes = ""
     @State private var date: Date
     @State private var reminderEnabled = false
+    @State private var reminderTime: Date
+    @State private var showPermissionAlert = false
 
     let activityTypes = ["ដាំដំណាំ", "ស្រោចទឹក", "បាញ់ថ្នាំ", "ច្រូតកាត់", "ផ្សេងៗ"]
 
     /// Accept the selected date from CalendarTabView
-    init(selectedDate: Date = Date()) {
-        _date = State(initialValue: selectedDate)
+    init(initialDate: Date = Date()) {
+        _date = State(initialValue: initialDate)
+        _reminderTime = State(initialValue: initialDate)
     }
 
     var body: some View {
@@ -609,27 +754,47 @@ struct AddActivityView: View {
                         }
                     }
                     DatePicker("កាលបរិច្ឆេទ", selection: $date,
-                               displayedComponents: [.date, .hourAndMinute])
+                               displayedComponents: .date)
                 }
+
                 Section(header: Text("កំណត់ចំណាំ")) {
-                    TextField("បញ្ចូលកំណត់ចំណាំ...", text: $notes)
+                    TextEditor(text: $notes).frame(minHeight: 60)
                 }
-                Section {
+
+                Section(header: Text("ការរំលឹក")) {
                     Toggle("បើកការរំលឹក", isOn: $reminderEnabled)
+                        .onChange(of: reminderEnabled) { enabled in
+                            if enabled { requestNotificationPermission() }
+                        }
+
+                    if reminderEnabled {
+                        DatePicker("ម៉ោងរំលឹក", selection: $reminderTime,
+                                   displayedComponents: .hourAndMinute)
+                    }
                 }
             }
             .navigationTitle("បន្ថែមសកម្មភាព")
             .navigationBarItems(
-                leading: Button("បោះបង់") {
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button("រក្សាទុក") {
-                    saveActivity()
-                }
-                .disabled(title.isEmpty)
+                leading: Button("បោះបង់") { presentationMode.wrappedValue.dismiss() },
+                trailing: Button("រក្សាទុក") { saveActivity() }
+                    .disabled(title.isEmpty)
             )
+            .alert(isPresented: $showPermissionAlert) {
+                Alert(
+                    title: Text("ការអនុញ្ញាត"),
+                    message: Text("សូមបើកការជូនដំណឹងនៅក្នុង Settings ដើម្បីប្រើមុខងារការរំលឹក។"),
+                    primaryButton: .default(Text("បើក Settings")) {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    },
+                    secondaryButton: .cancel(Text("បោះបង់")) { reminderEnabled = false }
+                )
+            }
         }
     }
+
+    // MARK: - Save
 
     private func saveActivity() {
         let activity = FarmActivity(context: viewContext)
@@ -637,18 +802,43 @@ struct AddActivityView: View {
         activity.title = title
         activity.activityType = activityType
         activity.notes = notes
-        activity.date = date
         activity.isCompleted = false
         activity.reminderEnabled = reminderEnabled
 
+        // Merge the picked date with the reminder time so activity.date
+        // carries both (the notification trigger reads year+month+day+hour+minute).
+        activity.date = reminderEnabled
+            ? combineDateAndTime(date: date, time: reminderTime)
+            : date
+
         try? viewContext.save()
 
-        // Schedule local notification when reminder is enabled
         if reminderEnabled {
             NotificationManager.shared.scheduleNotification(for: activity)
         }
 
         presentationMode.wrappedValue.dismiss()
+    }
+
+    // MARK: - Permission
+
+    private func requestNotificationPermission() {
+        NotificationManager.shared.requestPermission { granted in
+            if !granted { showPermissionAlert = true }
+        }
+    }
+
+    // MARK: - Helpers
+
+    /// Merges the date portion of one Date with the hour/minute of another.
+    private func combineDateAndTime(date: Date, time: Date) -> Date {
+        let cal = Calendar.current
+        let d = cal.dateComponents([.year, .month, .day], from: date)
+        let t = cal.dateComponents([.hour, .minute], from: time)
+        var merged = DateComponents()
+        merged.year = d.year;  merged.month  = d.month;  merged.day    = d.day
+        merged.hour = t.hour;  merged.minute = t.minute
+        return cal.date(from: merged) ?? date
     }
 }
 ```
@@ -657,9 +847,17 @@ struct AddActivityView: View {
 >
 > | What | Why |
 > |---|---|
-> | `init(selectedDate:)` | Pre-fills DatePicker to the day tapped in calendar |
-> | `displayedComponents: [.date, .hourAndMinute]` | Notification needs a time, not just a date |
+> | `init(initialDate:)` | Pre-fills the date picker to the day tapped in the calendar |
+> | Separate `reminderTime` state | Keeps the day and the clock independent — user picks both |
+> | `combineDateAndTime(date:time:)` | Merges them into one `Date` stored on the activity |
+> | `.onChange(of: reminderEnabled)` → permission | Requests permission only when the user actually wants a reminder |
+> | Alert with `openSettingsURLString` | Gracefully handles denied permission instead of silently failing |
 > | `NotificationManager.scheduleNotification(for:)` on save | Actually schedules the reminder |
+
+> **`EditActivityView` mirrors this** with one extra step: before
+> re-scheduling, it calls `cancelNotification(for:)` on the activity's UUID
+> so the old pending notification can't fire after the user changes the
+> date or disables the reminder.
 
 ---
 
@@ -676,7 +874,7 @@ struct AddActivityView: View {
 User taps notification banner
     │
     ▼
-AppDelegate.didReceive(response:)
+NotificationManager.userNotificationCenter(_:didReceive:)
     │  reads activityID from userInfo
     │
     ▼
@@ -696,30 +894,32 @@ CalendarTabView.onReceive
 Activity list filters to that date → activity is visible
 ```
 
-**Step 1 — Define the Notification.Name:**
+**Step 1 — Define the Notification.Name next to the manager:**
 
 ```swift
-// In SmartFarmerAssistantFinishApp.swift
+// CalendarReminders/Services/NotificationManager.swift
 extension Notification.Name {
+    /// Posted when the user taps a farm-activity notification.
+    /// userInfo contains ["activityID": UUID]
     static let didTapActivityNotification = Notification.Name("didTapActivityNotification")
 }
 ```
 
-**Step 2 — AppDelegate handles the tap:**
+**Step 2 — `NotificationManager` implements `UNUserNotificationCenterDelegate`:**
 
 ```swift
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+extension NotificationManager {   // same class from Lesson 5.3 / 5.4
 
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
-        NotificationManager.shared.requestPermission { _ in }
-        return true
+    // Show the notification banner even when the app is in the foreground
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
     }
 
-    // Called when user taps a notification
+    // Called when the user taps a notification — post a deep-link event
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -728,32 +928,29 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let userInfo = response.notification.request.content.userInfo
         if let idString = userInfo["activityID"] as? String,
            let activityID = UUID(uuidString: idString) {
-            NotificationCenter.default.post(
-                name: .didTapActivityNotification,
-                object: nil,
-                userInfo: ["activityID": activityID]
-            )
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: .didTapActivityNotification,
+                    object: nil,
+                    userInfo: ["activityID": activityID]
+                )
+            }
         }
         completionHandler()
-    }
-
-    // Show notification even when app is in foreground
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.banner, .sound])
     }
 }
 ```
 
+> Remember: `UNUserNotificationCenter.current().delegate = self` was already
+> set inside `NotificationManager.init()` in Lesson 5.3 — no AppDelegate
+> required.
+
 | Delegate method | When it's called |
 |-----------------|------------------|
 | `willPresent` | Notification arrives while app is **in foreground** |
-| `didReceive` | User **taps** the notification |
+| `didReceive`  | User **taps** the notification                    |
 
-**Step 3 — MainTabView switches to Calendar tab:**
+**Step 3 — MainTabView switches to the Calendar tab:**
 
 ```swift
 // In MainTabView body, add after .environmentObject(financeCoordinator):
@@ -781,12 +978,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 > **Why use `NotificationCenter.default` (Foundation) instead of passing data directly?**
 >
-> `AppDelegate` does not have a reference to `MainTabView` or `CalendarTabView`.
-> Foundation's `NotificationCenter` acts as a decoupled event bus:
-> - **Publisher:** `AppDelegate.didReceive` posts the event
+> `NotificationManager` does not have references to `MainTabView` or
+> `CalendarTabView`. Foundation's `NotificationCenter` acts as a decoupled
+> event bus:
+> - **Publisher:** `NotificationManager.didReceive` posts the event
 > - **Subscribers:** `MainTabView` and `CalendarTabView` each react independently
 >
-> This keeps the AppDelegate free of SwiftUI dependencies.
+> This keeps the service free of SwiftUI dependencies and makes both subscribers
+> testable in isolation.
 
 ---
 
@@ -812,7 +1011,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 │  iOS delivers notification                                   │
 │    │                                                         │
 │    ▼  (user taps)                                            │
-│  AppDelegate.didReceive                                      │
+│  NotificationManager.didReceive(response:)                   │
 │    │                                                         │
 │    ▼                                                         │
 │  NotificationCenter.post(.didTapActivityNotification)        │
@@ -831,12 +1030,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 | Mistake | Problem | Fix |
 |---------|---------|-----|
-| Forget to set `delegate = self` | `didReceive` never called | Set delegate in `didFinishLaunching` |
-| Don't request permission | Notifications silently fail | Call `requestPermission()` at launch |
+| Forget to set `delegate = self` | `didReceive` never called | Set it in `NotificationManager.init()` so it's ready before any notification arrives |
+| Don't request permission | Notifications silently fail | Call `requestPermission()` when the user enables a reminder |
 | Use `repeats: true` with full date | Crash — repeating triggers need partial components | Use `repeats: false` for one-time events |
-| Forget `DispatchQueue.main.async` | UI update on background thread → crash | Always dispatch to main in completion |
+| Forget `DispatchQueue.main.async` | UI update on background thread → crash | Always dispatch to main in the completion handler |
 | Don't store ID in `userInfo` | Can't deep-link on tap | Always include the activity UUID |
-| Forget to remove notification on delete | Ghost notification fires for deleted activity | Call `removeNotification(id:)` before delete |
+| Forget to cancel on delete | Ghost notification fires for deleted activity | Call `cancelNotification(for:)` before `viewContext.delete` |
+| Forget to cancel on complete / edit | Stale notification fires after the user finished or rescheduled the activity | Call `cancelNotification(for:)` inside the toggle handler and before re-scheduling in `EditActivityView` |
+| Schedule a past date | iOS silently drops the request | Guard with `date > Date()` before building the trigger |
 
 ---
 
