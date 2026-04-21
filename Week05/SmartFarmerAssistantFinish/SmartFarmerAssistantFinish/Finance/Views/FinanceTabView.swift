@@ -12,7 +12,6 @@ import CoreData
 
 struct FinanceTabView: View {
 
-    @EnvironmentObject private var viewModel: FarmViewModel
     // FinanceCoordinator is injected by MainTabView via .environmentObject(...)
     // It owns selectedTransactionID, which drives NavigationLink in the list.
     @EnvironmentObject private var coordinator: FinanceCoordinator
@@ -77,7 +76,6 @@ struct FinanceTabView: View {
                 // TransactionDetailView onto the stack.
                 FilteredTransactionList(
                     filterType: filterType,
-                    viewModel: viewModel,
                     selectedTransactionID: $coordinator.selectedTransactionID
                 )
                 .environment(\.managedObjectContext, viewContext)
@@ -93,7 +91,6 @@ struct FinanceTabView: View {
             .sheet(isPresented: $showingAddTransaction) {
                 AddTransactionView()
                     .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
             }
         }
     }
@@ -105,9 +102,7 @@ struct SummaryCard: View {
     let amount: Double
     let color: Color
     let icon: String
-    
-    @EnvironmentObject private var viewModel: FarmViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -117,8 +112,8 @@ struct SummaryCard: View {
                     .font(.caption)
                     .foregroundColor(.gray)
             }
-            
-            Text(viewModel.formatCurrency(amount))
+
+            Text(amount.formattedCurrency)
                 .font(.headline)
                 .foregroundColor(color)
         }

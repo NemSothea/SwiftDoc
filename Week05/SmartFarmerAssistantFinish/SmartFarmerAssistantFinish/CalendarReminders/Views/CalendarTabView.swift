@@ -15,7 +15,6 @@ import UserNotifications
 // MARK: - CalendarTabView
 
 struct CalendarTabView: View {
-    @EnvironmentObject private var viewModel: FarmViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -90,7 +89,7 @@ struct CalendarTabView: View {
                                     .buttonStyle(BorderlessButtonStyle())
 
                                     NavigationLink(destination: ActivityDetailView(activity: activity)) {
-                                        ActivityRowContent(activity: activity, viewModel: viewModel)
+                                        ActivityRowContent(activity: activity)
                                     }
                                 }
                             }
@@ -113,7 +112,6 @@ struct CalendarTabView: View {
             .sheet(isPresented: $showingAddActivity) {
                 AddActivityView(initialDate: selectedDate)
                     .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
             }
             // Deep-link: when a notification is tapped, jump to the activity's date
             .onReceive(
@@ -344,7 +342,6 @@ struct DayCellView: View {
 
 struct ActivityRowContent: View {
     let activity: FarmActivity
-    let viewModel: FarmViewModel
 
     var body: some View {
         HStack(spacing: 12) {

@@ -13,7 +13,6 @@ import SwiftUI
 import CoreData
 
 struct TransactionDetailView: View {
-    @EnvironmentObject private var viewModel: FarmViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @ObservedObject var transaction: Transaction
@@ -25,7 +24,7 @@ struct TransactionDetailView: View {
             // Amount
             Section(header: Text("ចំនួនទឹកប្រាក់")) {
                 HStack {
-                    Text(viewModel.formatCurrency(transaction.amount))
+                    Text(transaction.amount.formattedCurrency)
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(transaction.isExpense ? .red : .green)
@@ -57,7 +56,7 @@ struct TransactionDetailView: View {
             Section(header: Text("កាលបរិច្ឆេទ")) {
                 if let date = transaction.date {
                     DetailRow(label: "ថ្ងៃខែឆ្នាំ",
-                              value: viewModel.formatDate(date))
+                              value: date.formattedMedium)
                 }
             }
         }
@@ -68,9 +67,10 @@ struct TransactionDetailView: View {
             }
         )
         .sheet(isPresented: $showingEdit) {
+            // FinanceViewModel propagates from MainTabView's root injection;
+            // EditTransactionView reads it via its own @EnvironmentObject.
             EditTransactionView(transaction: transaction)
                 .environment(\.managedObjectContext, viewContext)
-                .environmentObject(viewModel)
         }
     }
 }

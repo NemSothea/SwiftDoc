@@ -11,7 +11,7 @@ import SwiftUI
 import CoreData
 
 struct MainTabView: View {
-    @StateObject private var viewModel: FarmViewModel
+    @StateObject private var viewModel: FinanceViewModel
     // FinanceCoordinator is created here (root owner) and injected
     // into the entire view hierarchy via .environmentObject(financeCoordinator).
     // Any view can then trigger Finance tab navigation by mutating
@@ -21,7 +21,7 @@ struct MainTabView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     init() {
-        _viewModel = StateObject(wrappedValue: FarmViewModel(context: CoreDataManager.shared.context))
+        _viewModel = StateObject(wrappedValue: FinanceViewModel(context: CoreDataManager.shared.context))
     }
 
     var body: some View {

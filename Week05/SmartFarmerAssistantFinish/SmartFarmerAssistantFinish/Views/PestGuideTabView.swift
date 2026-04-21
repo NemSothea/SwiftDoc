@@ -9,7 +9,6 @@ import SwiftUI
 import CoreData
 
 struct PestGuideTabView: View {
-    @EnvironmentObject private var viewModel: FarmViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(

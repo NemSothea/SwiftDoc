@@ -10,7 +10,7 @@ import CoreData
 
 struct EditTransactionView: View {
     @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject private var viewModel: FarmViewModel
+    @EnvironmentObject private var viewModel: FinanceViewModel
 
     let transaction: Transaction
 

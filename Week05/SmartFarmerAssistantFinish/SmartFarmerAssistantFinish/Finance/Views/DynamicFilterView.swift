@@ -18,7 +18,6 @@ import CoreData
 struct FilteredTransactionList: View {
     @Environment(\.managedObjectContext) private var viewContext
 
-    let viewModel: FarmViewModel
     // Binding to FinanceCoordinator.selectedTransactionID —
     // setting this drives programmatic navigation (deep linking)
     @Binding var selectedTransactionID: UUID?
@@ -29,9 +28,7 @@ struct FilteredTransactionList: View {
     }
 
     init(filterType: String,
-         viewModel: FarmViewModel,
          selectedTransactionID: Binding<UUID?>) {
-        self.viewModel = viewModel
         self._selectedTransactionID = selectedTransactionID
 
         // "all" → nil predicate (fetch everything)
@@ -58,7 +55,7 @@ struct FilteredTransactionList: View {
                     tag: transaction.id ?? UUID(),
                     selection: $selectedTransactionID
                 ) {
-                    TransactionRowView(transaction: transaction, viewModel: viewModel)
+                    TransactionRowView(transaction: transaction)
                 }
             }
             .onDelete(perform: deleteTransactions)

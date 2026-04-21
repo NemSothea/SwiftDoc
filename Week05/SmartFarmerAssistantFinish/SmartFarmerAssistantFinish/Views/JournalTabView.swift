@@ -9,7 +9,6 @@ import SwiftUI
 import CoreData
 
 struct JournalTabView: View {
-    @EnvironmentObject private var viewModel: FarmViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -23,8 +22,8 @@ struct JournalTabView: View {
         NavigationView {
             List {
                 ForEach(entries, id: \.self) { entry in
-                    NavigationLink(destination: JournalDetailView(entry: entry, viewModel: viewModel)) {
-                        JournalRowView(entry: entry, viewModel: viewModel)
+                    NavigationLink(destination: JournalDetailView(entry: entry)) {
+                        JournalRowView(entry: entry)
                     }
                 }
                 .onDelete(perform: deleteEntries)
@@ -40,7 +39,6 @@ struct JournalTabView: View {
             .sheet(isPresented: $showingAddEntry) {
                 AddJournalEntryView()
                     .environment(\.managedObjectContext, viewContext)
-                    .environmentObject(viewModel)
             }
         }
     }
@@ -55,13 +53,12 @@ struct JournalTabView: View {
 
 struct JournalRowView: View {
     let entry: JournalEntry
-    let viewModel: FarmViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 if let date = entry.date {
-                    Text(viewModel.formatDate(date))
+                    Text(date.formattedMedium)
                         .font(.headline)
                 }
                 Spacer()
@@ -91,13 +88,12 @@ struct JournalRowView: View {
 
 struct JournalDetailView: View {
     let entry: JournalEntry
-    let viewModel: FarmViewModel
 
     var body: some View {
         List {
             if let date = entry.date {
                 Section(header: Text("កាលបរិច្ឆេទ")) {
-                    Text(viewModel.formatDate(date))
+                    Text(date.formattedMedium)
                 }
             }
 
