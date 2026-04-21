@@ -39,7 +39,8 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     func requestPermission(completion: @escaping (Bool) -> Void = { _ in }) {
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .badge, .sound]
-        ) { granted, _ in
+        ) { granted, error in
+            print("[NotificationManager] requestPermission granted=\(granted) error=\(String(describing: error))")
             DispatchQueue.main.async {
                 self.isAuthorized = granted
                 completion(granted)
@@ -50,9 +51,21 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     /// Re-checks the current authorization status (e.g. on app foreground).
     func checkAuthorization() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
+            print("[NotificationManager] checkAuthorization status=\(Self.describe(settings.authorizationStatus)) alertSetting=\(settings.alertSetting.rawValue)")
             DispatchQueue.main.async {
                 self.isAuthorized = settings.authorizationStatus == .authorized
             }
+        }
+    }
+
+    private static func describe(_ status: UNAuthorizationStatus) -> String {
+        switch status {
+        case .notDetermined: return "notDetermined"
+        case .denied:        return "denied"
+        case .authorized:    return "authorized"
+        case .provisional:   return "provisional"
+        case .ephemeral:     return "ephemeral"
+        @unknown default:    return "unknown(\(status.rawValue))"
         }
     }
 
@@ -62,10 +75,16 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     func scheduleNotification(for activity: FarmActivity) {
         guard let id = activity.id,
               let title = activity.title,
-              let date = activity.date else { return }
+              let date = activity.date else {
+            print("[NotificationManager] schedule SKIPPED: missing id/title/date")
+            return
+        }
 
         // Don't schedule notifications in the past
-        guard date > Date() else { return }
+        guard date > Date() else {
+            print("[NotificationManager] schedule SKIPPED: date \(date) is not in the future (now=\(Date()))")
+            return
+        }
 
         let content = UNMutableNotificationContent()
         content.title = "🌾 កម្មវិធីកសិកម្ម"
@@ -88,13 +107,35 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
             content: content,
             trigger: trigger
         )
-        UNUserNotificationCenter.current().add(request)
+
+        print("[NotificationManager] scheduling id=\(id.uuidString.prefix(8)) fireAt=\(date) isAuthorized=\(isAuthorized)")
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("[NotificationManager] add() FAILED: \(error)")
+            } else {
+                print("[NotificationManager] add() OK")
+                self.dumpPendingRequests()
+            }
+        }
     }
 
     /// Removes any pending notification for the given activity ID.
     func cancelNotification(for activityID: UUID) {
+        print("[NotificationManager] cancelling id=\(activityID.uuidString.prefix(8))")
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(withIdentifiers: [activityID.uuidString])
+    }
+
+    /// Prints every pending local notification — call this anywhere while debugging.
+    func dumpPendingRequests() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            print("[NotificationManager] pending count=\(requests.count)")
+            for req in requests {
+                let fire = (req.trigger as? UNCalendarNotificationTrigger)?.nextTriggerDate()
+                print("  • id=\(req.identifier.prefix(8)) title=\"\(req.content.title)\" fires=\(fire?.description ?? "nil")")
+            }
+        }
     }
 
     // MARK: - UNUserNotificationCenterDelegate
