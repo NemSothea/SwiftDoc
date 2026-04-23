@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/sothea007/Documents/Research/SwiftDoc/PestDisease/PestDisease/Assets.xcassets/Rice blast.imageset/**)",
+      "Bash(cp \"/Users/sothea007/Documents/Research/SwiftDoc/PestDisease/PestDisease/Assets.xcassets/Rice blast.imageset/Rice blast.jpg\" \"/Users/sothea007/Documents/Research/SwiftDoc/Week06/SmartFarmerAssistantFinish/SmartFarmerAssistantFinish/Assets.xcassets/Rice blast.imageset/\")",
+      "Bash(cp \"/Users/sothea007/Documents/Research/SwiftDoc/PestDisease/PestDisease/Assets.xcassets/Rice blast.imageset/Contents.json\" \"/Users/sothea007/Documents/Research/SwiftDoc/Week06/SmartFarmerAssistantFinish/SmartFarmerAssistantFinish/Assets.xcassets/Rice blast.imageset/\")",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "Bash(mkdir -p \"Brown planthopper.imageset\" \"Cassava mosaic.imageset\" \"Fall armyworm.imageset\" \"Tomato late blight.imageset\" \"Aphids.imageset\")",
+      "Bash(curl -A \"SmartFarmerAssistant/1.0 \\(course project; contact chhengudam@kosign.com.kh\\)\" -sSL -o \"Brown planthopper.imageset/Brown planthopper.jpg\" \"https://upload.wikimedia.org/wikipedia/commons/4/4c/Nilaparvata_lugens_from_CSIRO.jpg\")",
+      "Bash(curl -A \"SmartFarmerAssistant/1.0 \\(course project; contact chhengudam@kosign.com.kh\\)\" -sSL -o \"Fall armyworm.imageset/Fall armyworm.jpg\" \"https://upload.wikimedia.org/wikipedia/commons/c/c0/Spodoptera_frugiperda_%28200211-0809%29.jpg\")",
+      "Bash(curl -A \"SmartFarmerAssistant/1.0 \\(course project; contact chhengudam@kosign.com.kh\\)\" -sSL -o \"Cassava mosaic.imageset/Cassava mosaic.jpg\" \"https://upload.wikimedia.org/wikipedia/commons/b/b1/Manihot_esculenta_flowers.jpg\")",
+      "Bash(curl -A \"SmartFarmerAssistant/1.0 \\(course project; contact chhengudam@kosign.com.kh\\)\" -sSL -o \"Tomato late blight.imageset/Tomato late blight.jpg\" \"https://upload.wikimedia.org/wikipedia/commons/d/d9/Tomato_with_Phytophthora_infestans_%28late_blight%29.jpg\")",
+      "Bash(sips -g all \"/Users/sothea007/Documents/Research/SwiftDoc/Week06/SmartFarmerAssistantFinish/SmartFarmerAssistantFinish/Assets.xcassets/Tomato late blight.imageset/Tomato late blight.jpg\")",
+      "Bash(sips -g all \"/Users/sothea007/Documents/Research/SwiftDoc/Week06/SmartFarmerAssistantFinish/SmartFarmerAssistantFinish/Assets.xcassets/Rice blast.imageset/Rice blast.jpg\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Users/sothea007/Documents/Research/SwiftDoc/Week06/SmartFarmerAssistantFinish/SmartFarmerAssistantFinish/PestDisease/Resources/pests.json'\\)\\); t=[p for p in d['pests'] if 'Tomato' in p['name']][0]; [print\\(f'{k}: {repr\\(v\\)[:200]}'\\) for k,v in t.items\\(\\)]\")",
+      "Bash(python3 *)",
+      "Bash(echo \"\\(exit=$?\\)\")"
+    ]
+  }
+}
