@@ -150,7 +150,7 @@
 
 ### Phase 4: Distribution & Completion (Weeks 11-12)
 
-#### Week 11: Backup & Restore (Instead of Unit Testing)
+#### Week 11: Backup & Restore(Skip this lesson)
 - **Topic:** Helping farmers never lose their valuable data
 - **Lesson Breakdown:**
     - Understanding the importance of data backup for farmers
