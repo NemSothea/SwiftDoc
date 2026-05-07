@@ -124,44 +124,44 @@ add_text(slide, "SmartFarmer Assistant · iOS SwiftUI Course",
          0.3, 0.3, 10, 0.4, size=13, color=GREY)
 
 add_text(slide, "Week 12", 0.3, 0.9, 12, 1.0, size=52, bold=True, color=TEAL)
-add_text(slide, "Final Polish & TestFlight Distribution",
+add_text(slide, "ការតុបតែងចុងក្រោយ & TestFlight",
          0.3, 1.75, 12, 1.0, size=32, bold=True, color=WHITE)
 
 add_text(slide,
-         "Preparing for real farmer testing —\n"
-         "App icon, launch screen, TestFlight setup & user guide",
+         "រៀបចំសម្រាប់ការសាកល្បងកសិករពិត —\n"
+         "App icon, launch screen, TestFlight & ការណែនាំ",
          0.3, 2.85, 10, 1.2, size=20, color=GREY)
 
 pill_data = [
-    (0.3,  4.3, TEAL,   "🎨  App Polish"),
+    (0.3,  4.3, TEAL,   "🎨  ការតុបតែង App"),
     (2.8,  4.3, BLUE,   "🚀  TestFlight"),
-    (5.3,  4.3, GREEN,  "📖  User Guide"),
-    (7.8,  4.3, ORANGE, "📣  Feedback"),
-    (10.3, 4.3, PURPLE, "🏆  Final Demo"),
+    (5.3,  4.3, GREEN,  "📖  ការណែនាំ"),
+    (7.8,  4.3, ORANGE, "📣  មតិ"),
+    (10.3, 4.3, PURPLE, "🏆  Demo ចុងក្រោយ"),
 ]
 for px, py, pc, pt in pill_data:
     add_rect(slide, px, py, 2.2, 0.5, pc)
     add_text(slide, pt, px + 0.1, py + 0.05, 2.1, 0.4, size=13, bold=True)
 
-add_text(slide, "Week 12 of 12", W - 2.5, H - 0.5, 2.3, 0.4,
+add_text(slide, "Week 12 ក្នុង 12", W - 2.5, H - 0.5, 2.3, 0.4,
          size=12, color=GREY, align=PP_ALIGN.RIGHT)
 
 
 # ── Slide 2: Learning Objectives ────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.1, DARK2)
-add_text(slide, "🎯  Learning Objectives", 0.4, 0.2, 12, 0.7,
+add_text(slide, "🎯  គោលបំណងរៀន", 0.4, 0.2, 12, 0.7,
          size=28, bold=True, color=TEAL)
 
 objectives = [
-    "Design and export a farm-themed app icon set (all required sizes) using SF Symbols / Figma",
-    "Configure a LaunchScreen.storyboard with a branded splash screen",
-    "Set the correct bundle ID, display name, and version/build numbers for App Store Connect",
-    "Archive and upload a build to App Store Connect using Xcode Organizer",
-    "Create a TestFlight beta group and invite real farmers as testers",
-    "Build an in-app user guide screen that explains each feature to first-time users",
-    "Design a structured feedback plan to collect actionable data from farmer testers",
-    "Write a final README documenting architecture, features, and how to run the project",
+    "Design និង export icon set app ប្រធានបទចម្ការ (ទំហំទាំងអស់) ដោយ SF Symbols / Figma",
+    "Configure LaunchScreen.storyboard ជាមួយ splash screen ម៉ាក",
+    "កំណត់ bundle ID, display name, version/build numbers ត្រឹមត្រូវ",
+    "Archive ហើយ upload build ទៅ App Store Connect ដោយ Xcode Organizer",
+    "បង្កើត TestFlight beta group ហើយអញ្ជើញកសិករពិតជា testers",
+    "បង្កើតផ្ទាំងណែនាំ in-app ដែលពន្យល់ features ដល់ users ថ្មី",
+    "Design ផែនការ feedback ដែលស្ថានភាពប្រមូលទិន្នន័យ ពីកសិករ testers",
+    "សរសេរ README ចុងក្រោយ ឯកសារ architecture, features, ការ run project",
 ]
 add_bullets(slide, objectives, 0.5, 1.3, 12.5, 5.8, size=17)
 
@@ -173,7 +173,7 @@ add_text(slide, "🎨  App Icon & Launch Screen",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Left: App Icon sizes table
-add_text(slide, "Required Icon Sizes", 0.3, 1.1, 5.8, 0.4,
+add_text(slide, "ទំហំ Icon ដែលត្រូវការ", 0.3, 1.1, 5.8, 0.4,
          size=15, bold=True, color=TEAL)
 
 icon_sizes = [
@@ -203,28 +203,28 @@ add_text(slide, "ជំនួយស្មាតសម្រាប់\nកសិ�
          size=11, color=GREY, align=PP_ALIGN.CENTER)
 
 add_bullets(slide, [
-    "Use a UIImageView for your logo centred on screen",
-    "Set background colour to match your app theme",
-    "Add CFBundleDisplayName in Info.plist for Khmer name",
-    "No animations — LaunchScreen must be static",
+    "ប្រើ UIImageView សម្រាប់ logo នៅចំកណ្ដាល",
+    "កំណត់ background color ឱ្យស្របតាម theme",
+    "បន្ថែម CFBundleDisplayName ក្នុង Info.plist ចំពោះឈ្មោះខ្មែរ",
+    "គ្មាន animations — LaunchScreen ត្រូវ static",
 ], 6.7, 2.3, 6.2, 3.2, size=13, color=WHITE)
 
 
 # ── Slide 4: App Name, Bundle ID & Version ───────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "⚙️  App Identity — Bundle ID, Name & Version",
+add_text(slide, "⚙️  Identity App — Bundle ID, ឈ្មោះ & Version",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Config table
 config_items = [
-    ("Display Name",    "SmartFarmer Assistant",         "Shown under app icon on home screen"),
-    ("Bundle ID",       "com.yourname.smartfarmer",      "Unique — must match App Store Connect exactly"),
-    ("Version",         "1.0.0",                         "Marketing version shown to users"),
-    ("Build",           "1",                             "Internal build number — increment every upload"),
-    ("Min Deployment",  "iOS 13.0",                      "Covers 99 %+ of active iPhones"),
-    ("Device Family",   "iPhone only",                   "Set iPad if you want universal"),
-    ("Orientations",    "Portrait only",                 "Lock for farmer use — avoid accidental rotation"),
+    ("Display Name",    "SmartFarmer Assistant",         "បង្ហាញពីក្រោម app icon ផ្ទាំងដើម"),
+    ("Bundle ID",       "com.yourname.smartfarmer",      "តែមួយ — ត្រូវដូចគ្នា App Store Connect"),
+    ("Version",         "1.0.0",                         "Version marketing បង្ហាញដល់ users"),
+    ("Build",           "1",                             "Build number ខាងក្នុង — បង្កើនរៀងរាល់ upload"),
+    ("Min Deployment",  "iOS 13.0",                      "គ្របដណ្ដប់ 99%+ iPhones ដំណើរការ"),
+    ("Device Family",   "iPhone only",                   "កំណត់ iPad បើចង់ universal"),
+    ("Orientations",    "Portrait only",                 "Lock ដើម្បីប្រើ — ការពារ rotation ចៃដន្យ"),
 ]
 for i, (key, val, tip) in enumerate(config_items):
     y = 1.15 + i * 0.87
@@ -236,38 +236,38 @@ for i, (key, val, tip) in enumerate(config_items):
     add_text(slide, tip, 7.45, y + 0.18, 5.5, 0.4, size=12, color=GREY)
 
 # Column headers
-add_text(slide, "Setting", 0.45, 0.88, 2.6, 0.3, size=12, bold=True, color=GREY)
-add_text(slide, "Value",   3.35, 0.88, 3.8, 0.3, size=12, bold=True, color=GREY)
-add_text(slide, "Tip",     7.45, 0.88, 5.5, 0.3, size=12, bold=True, color=GREY)
+add_text(slide, "ការកំណត់", 0.45, 0.88, 2.6, 0.3, size=12, bold=True, color=GREY)
+add_text(slide, "តម្លៃ",    3.35, 0.88, 3.8, 0.3, size=12, bold=True, color=GREY)
+add_text(slide, "ដំបូន្មាន", 7.45, 0.88, 5.5, 0.3, size=12, bold=True, color=GREY)
 
 
 # ── Slide 5: TestFlight Setup ────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🚀  TestFlight Setup — Step by Step",
+add_text(slide, "🚀  ការរៀបចំ TestFlight — ជំហានម្ដងម្ដង",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 steps = [
-    (TEAL,   "Step 1",
-     "Create App Record in App Store Connect",
+    (TEAL,   "ជំហាន 1",
+     "បង្កើត App Record ក្នុង App Store Connect",
      "appstoreconnect.apple.com → My Apps → + → New App\n"
-     "Fill: Platform (iOS), Name, Bundle ID, Primary Language, SKU"),
-    (BLUE,   "Step 2",
-     "Archive in Xcode",
-     "Select 'Any iOS Device (arm64)' as destination\n"
-     "Product → Archive → Xcode Organizer opens automatically"),
-    (GREEN,  "Step 3",
-     "Upload to App Store Connect",
-     "In Organizer: Distribute App → App Store Connect → Upload\n"
-     "Enable 'Upload your app's symbols' for crash reports"),
-    (ORANGE, "Step 4",
-     "Add Beta Testers",
-     "App Store Connect → TestFlight → Internal/External Group\n"
-     "Invite by email — farmers receive install link via email"),
-    (PURPLE, "Step 5",
-     "Monitor & Collect Feedback",
-     "TestFlight app shows crash logs, tester feedback screenshots\n"
-     "Testers long-press anywhere → Send Feedback with screenshot"),
+     "បំពេញ: Platform (iOS), Name, Bundle ID, Primary Language, SKU"),
+    (BLUE,   "ជំហាន 2",
+     "Archive ក្នុង Xcode",
+     "ជ្រើស 'Any iOS Device (arm64)'\n"
+     "Product → Archive → Xcode Organizer បើកស្វ័យ"),
+    (GREEN,  "ជំហាន 3",
+     "Upload ទៅ App Store Connect",
+     "ក្នុង Organizer: Distribute App → Upload\n"
+     "បើក 'Upload your app's symbols'"),
+    (ORANGE, "ជំហាន 4",
+     "បន្ថែម Beta Testers",
+     "App Store Connect → TestFlight → Group\n"
+     "អញ្ជើញ email — កសិករទទួល link ដំឡើង"),
+    (PURPLE, "ជំហាន 5",
+     "ត្រួតពិនិត្យ & ប្រមូល Feedback",
+     "TestFlight បង្ហាញ crash logs, screenshots feedback\n"
+     "Testers long-press → Send Feedback ជាមួយ screenshot"),
 ]
 for i, (color, label, title, desc) in enumerate(steps):
     y = 1.15 + i * 1.22
@@ -282,7 +282,7 @@ for i, (color, label, title, desc) in enumerate(steps):
 # ── Slide 6: In-App User Guide ───────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "📖  In-App User Guide Screen",
+add_text(slide, "📖  ផ្ទាំងណែនាំ In-App",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Left: code
@@ -315,15 +315,15 @@ code = [
 add_code(slide, code, 0.3, 1.1, 7.8, 5.9, size=11)
 
 # Right: design tips
-add_text(slide, "UX Best Practices", 8.4, 1.1, 4.6, 0.4,
+add_text(slide, "ការអនុវត្ត UX ល្អ", 8.4, 1.1, 4.6, 0.4,
          size=16, bold=True, color=GREEN)
 
 tips = [
-    ("Keep it short", "3-4 bullet tips per feature\n— farmers won't read long text"),
-    ("Use SF Symbols", "Match icons used in the app\nso farmers recognise screens"),
-    ("Khmer first", "Write guide entirely in Khmer;\nadd English in parentheses"),
-    ("Screenshot cards", "Add a real app screenshot\nfor each feature section"),
-    ("Accessible via ⚙️", "Add Guide to Settings tab\nso it's always findable"),
+    ("រក្សាភ្លឺ", "tips 3-4 per feature\n— កសិករ មិនអានអត្ថបទវែង"),
+    ("ប្រើ SF Symbols", "ផ្ដល់ icons ដូចក្នុង app\nដើម្បីកសិករស្គាល់"),
+    ("ខ្មែរជាមុន", "សរសេរ ការណែនាំ ជាខ្មែរ;\nបន្ថែម English ក្នុងវង់ក្រចក"),
+    ("Screenshot cards", "បន្ថែម screenshot ពិត\nចំពោះ feature នីមួយៗ"),
+    ("ចូលតាម ⚙️", "បន្ថែម ការណែនាំ ក្នុង Settings tab\nឱ្យ​ស្វែងរកបានជានិច្ច"),
 ]
 for i, (title, desc) in enumerate(tips):
     y = 1.65 + i * 1.12
@@ -335,11 +335,11 @@ for i, (title, desc) in enumerate(tips):
 # ── Slide 7: Feedback Collection Plan ───────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "📣  Farmer Feedback Collection Plan",
+add_text(slide, "📣  ផែនការប្រមូល Feedback កសិករ",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Left column: questions to ask
-add_text(slide, "Key Questions to Ask Farmers", 0.3, 1.1, 6.2, 0.4,
+add_text(slide, "សំណួរសំខាន់ ដែលត្រូវសួរកសិករ", 0.3, 1.1, 6.2, 0.4,
          size=15, bold=True, color=ORANGE)
 questions = [
     ("💰", "Finance",  "Did you record all income & expenses this week?\nWere any categories missing?"),
@@ -356,18 +356,18 @@ for i, (icon, label, q) in enumerate(questions):
     add_text(slide, q,                 0.5, y + 0.45, 5.8, 0.45, size=11, color=WHITE)
 
 # Right column: methods & rating scale
-add_text(slide, "Collection Methods", 6.7, 1.1, 6.2, 0.4,
+add_text(slide, "វិធីប្រមូល", 6.7, 1.1, 6.2, 0.4,
          size=15, bold=True, color=TEAL)
 
 methods = [
     ("TestFlight built-in",
-     "Farmers long-press → screenshot + comment\n→ sent directly to App Store Connect"),
-    ("In-App Feedback Form",
-     "Simple form: 1-5 star rating per module\n+ open text field for suggestions"),
+     "កសិករ long-press → screenshot + comment\n→ ផ្ញើដោយផ្ទាល់ App Store Connect"),
+    ("Form Feedback In-App",
+     "Form សាមញ្ញ: rating 1-5 ⭐ ក្នុង module\n+ text field ប្រឹក្សា"),
     ("WhatsApp / Telegram Group",
-     "Create a group for beta testers — farmers\nshare voice messages (easier than typing)"),
-    ("Observation Session",
-     "Watch 3-5 farmers use the app for 30 min\nwithout helping — note confusion points"),
+     "បង្កើត group beta testers — កសិករ\nចែករំលែក voice messages (ងាយជាង type)"),
+    ("ការសង្កេត",
+     "មើល 3-5 កសិករប្រើ app 30 នាទី\nដោយមិនជួយ — កត់ចំណុចវង្វេង"),
 ]
 for i, (method, desc) in enumerate(methods):
     y = 1.65 + i * 1.35
@@ -380,7 +380,7 @@ for i, (method, desc) in enumerate(methods):
 # ── Slide 8: In-App Feedback Form (Code) ────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "⚙️  In-App Feedback Form — Live Coding Example",
+add_text(slide, "⚙️  Form Feedback In-App — ឧទាហរណ៍",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 code2 = [
@@ -416,7 +416,7 @@ code2 = [
 add_code(slide, code2, 0.3, 1.1, 7.8, 5.9, size=11)
 
 # Right: mock UI
-add_text(slide, "Preview", 8.4, 1.1, 4.5, 0.4, size=16, bold=True, color=GREY)
+add_text(slide, "Preview", 8.4, 1.1, 4.5, 0.4, size=16, bold=True, color=GREY)  # keep as-is
 add_rect(slide, 8.3, 1.6, 4.7, 5.4, RGBColor(0x0D, 0x1B, 0x2A))
 add_text(slide, "វាយតម្លៃកម្មវិធី",   8.5, 1.75, 4.3, 0.4, size=13, bold=True, color=TEAL)
 add_text(slide, "★ ★ ★ ★ ☆",         8.5, 2.25, 4.3, 0.5, size=22, color=RGBColor(0xFF, 0xD7, 0x00))

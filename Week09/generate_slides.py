@@ -121,18 +121,18 @@ def slide_01(prs):
     add_text(s, "WEEK 09", 1.0, 1.2, 2.0, 0.5,
              size=14, bold=True, color=DARK, align=PP_ALIGN.CENTER)
 
-    add_text(s, "Advanced UI", 1.0, 1.9, 10.5, 1.0,
+    add_text(s, "UI កម្រិតខ្ពស់", 1.0, 1.9, 10.5, 1.0,
              size=46, bold=True, color=WHITE)
     add_text(s, "& Animations", 1.0, 2.75, 10.5, 1.0,
              size=46, bold=True, color=GREEN)
 
-    add_text(s, "SmartFarmerAssistant — Polishing a Professional iOS App",
+    add_text(s, "SmartFarmerAssistant — តុបតែង iOS App ឱ្យស្អាតជាក្រុមហ៊ុន",
              1.0, 3.8, 10.5, 0.5, size=16, italic=True, color=GREY)
 
     # icon row
     icons = [("🎨", "ViewModifiers"), ("🃏", "FarmCard"),
              ("✨", "Animations"), ("🔄", "Pull-to-Refresh"),
-             ("🌙", "Dark Mode"), ("♿", "Accessibility")]
+             ("🌙", "Dark Mode"), ("♿", "ភាពងាយស្រួលប្រើ")]
     for i, (icon, label) in enumerate(icons):
         bx = 1.0 + i * 2.05
         add_rect(s, bx, 4.7, 1.85, 1.35, DARK2)
@@ -151,16 +151,16 @@ def slide_01(prs):
 def slide_02(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📋  Agenda — Week 9", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "📋  របៀបវារៈ — Week 9", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=GREEN)
 
     topics = [
-        ("01", GREEN,  "Custom ViewModifiers", "Consistent styling across all views"),
-        ("02", BLUE,   "Reusable Components",   "FarmCard · PrimaryButton · SectionHeader"),
+        ("01", GREEN,  "Custom ViewModifiers", "រចនាប័ទ្មស្អាតឆ្លងកាត់គ្រប់ Views"),
+        ("02", BLUE,   "Components ប្រើម្ដងហើយម្ដងទៀត",   "FarmCard · PrimaryButton · SectionHeader"),
         ("03", ORANGE, "Animations",            "Fade-in lists · Scale-press buttons · Slide-in"),
         ("04", PURPLE, "Pull-to-Refresh",        "Async refreshable + skeleton loading states"),
         ("05", TEAL,   "Dark Mode",              "Adaptive colors · systemBackground semantics"),
-        ("06", PINK,   "Accessibility",          "VoiceOver labels · Dynamic Type · A11y hints"),
+        ("06", PINK,   "ភាពងាយស្រួលប្រើ",          "VoiceOver labels · Dynamic Type · A11y hints"),
     ]
 
     for i, (num, color, title, sub) in enumerate(topics):
@@ -186,13 +186,13 @@ def slide_03(prs):
     add_text(s, "🎨  Custom ViewModifiers", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=GREEN)
 
-    add_text(s, "What is a ViewModifier?", 0.4, 1.05, 12.5, 0.45,
+    add_text(s, "ViewModifier គឺជាអ្វី?", 0.4, 1.05, 12.5, 0.45,
              size=19, bold=True, color=WHITE)
     add_bullets(s, [
-        "A reusable block of view transformations (background, shadow, corner radius…)",
-        "Applied with .modifier(MyModifier()) or the shorter .myModifier() extension",
-        "Keeps view code DRY — one change updates every card in the app",
-        "Can hold @State, @Environment, and respond to dark mode / accessibility",
+        "ប្លុក transformations ប្រើម្ដងហើយម្ដងទៀត (background, shadow, corner radius…)",
+        "ប្រើ .modifier(MyModifier()) ឬ extension .myModifier() ខ្លីជាង",
+        "View code DRY — ផ្លាស់ប្ដូរម្ដង ធ្វើបច្ចុប្បន្នភាព cards ទាំងអស់",
+        "អាចមាន @State, @Environment ហើយ respond ទៅ dark mode / accessibility",
     ], 0.4, 1.55, 8.0, 2.0, size=14, bullet_color=GREEN)
 
     add_code(s, [
@@ -211,7 +211,7 @@ def slide_03(prs):
         "}",
     ], 8.55, 0.95, 4.55, 3.5, size=10)
 
-    add_text(s, "✅  Usage", 0.4, 3.65, 8.0, 0.35,
+    add_text(s, "✅  ការប្រើប្រាស់", 0.4, 3.65, 8.0, 0.35,
              size=14, bold=True, color=TEAL)
     add_code(s, [
         "VStack { ... }",
@@ -233,7 +233,7 @@ def slide_04(prs):
 
     # FadeIn
     add_rect(s, 0.3, 1.0, 6.1, 2.85, CARD)
-    add_text(s, "FadeInModifier — staggered list entrance",
+    add_text(s, "FadeInModifier — entrance list ជំហាន",
              0.5, 1.05, 5.8, 0.38, size=13, bold=True, color=ORANGE)
     add_code(s, [
         "struct FadeInModifier: ViewModifier {",
@@ -255,7 +255,7 @@ def slide_04(prs):
 
     # ScalePress
     add_rect(s, 6.6, 1.0, 6.4, 2.85, CARD)
-    add_text(s, "ScalePressModifier — tactile button feedback",
+    add_text(s, "ScalePressModifier — feedback button ពេលចុច",
              6.8, 1.05, 6.0, 0.38, size=13, bold=True, color=BLUE)
     add_code(s, [
         "struct ScalePressModifier: ViewModifier {",
@@ -278,7 +278,7 @@ def slide_04(prs):
     ], 6.6, 1.45, 6.4, 2.35, size=9.5)
 
     # Usage
-    add_text(s, "Usage — stagger cards in Dashboard:", 0.4, 3.95, 8.5, 0.35,
+    add_text(s, "ការប្រើប្រាស់ — stagger cards ក្នុង Dashboard:", 0.4, 3.95, 8.5, 0.35,
              size=13, bold=True, color=TEAL)
     add_code(s, [
         "monthlyProfitLossCard.fadeIn(delay: 0.1)",
@@ -296,7 +296,7 @@ def slide_04(prs):
 def slide_05(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🃏  FarmCard — Generic Container", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "🃏  FarmCard — Container ទូទៅ", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=BLUE)
 
     add_code(s, [
@@ -334,14 +334,14 @@ def slide_05(prs):
     add_text(s, "$1,200", 10.5, 1.72, 2.35, 0.3, size=12, bold=True, color=GREEN, align=PP_ALIGN.RIGHT)
     add_text(s, "ចំណាយ", 7.2, 2.08, 2.5, 0.3, size=12, color=GREY)
     add_text(s, "$850", 10.5, 2.08, 2.35, 0.3, size=12, bold=True, color=RGBColor(0xE5, 0x47, 0x47), align=PP_ALIGN.RIGHT)
-    add_text(s, "← FarmCard renders any content", 7.2, 3.45, 5.6, 0.3, size=10, italic=True, color=GREY)
+    add_text(s, "← FarmCard render content ណាមួយ", 7.2, 3.45, 5.6, 0.3, size=10, italic=True, color=GREY)
 
-    add_text(s, "Usage:", 7.0, 3.85, 6.0, 0.35, size=13, bold=True, color=TEAL)
+    add_text(s, "ការប្រើប្រាស់:", 7.0, 3.85, 6.0, 0.35, size=13, bold=True, color=TEAL)
     add_code(s, [
         'FarmCard(title: "ចំណូល / ចំណាយ",',
         '         icon: "dollarsign.circle.fill",',
         '         iconColor: .green) {',
-        "    // any SwiftUI view here",
+        "    // SwiftUI view ណាមួយ",
         "}",
     ], 7.0, 4.25, 6.0, 1.9, size=11)
 
@@ -423,27 +423,27 @@ def slide_07(prs):
     add_text(s, "🎬  Slide & List Animations", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=ORANGE)
 
-    add_text(s, "Three animation patterns used in Week 9:", 0.4, 1.0, 12.5, 0.4,
+    add_text(s, "Pattern animation ០៣ ប្រើក្នុង Week 9:", 0.4, 1.0, 12.5, 0.4,
              size=15, color=GREY)
 
     patterns = [
         ("Fade-In (Staggered)", ORANGE,
-         ["Applied to each Dashboard section on .onAppear",
-          "delay: 0.1s per section → creates a waterfall effect",
+         ["ប្រើលើ Dashboard section នីមួយៗ នៅ .onAppear",
+          "delay: 0.1s ក្នុង section → បង្កើត waterfall effect",
           ".easeOut(duration: 0.5).delay(delay)"],
          [".fadeIn(delay: 0.1)  // P&L card",
           ".fadeIn(delay: 0.2)  // transactions",
           ".fadeIn(delay: 0.3)  // activities"]),
         ("Scale Press", BLUE,
-         ["Uses @GestureState + DragGesture(minimumDistance:0)",
-          "scaleEffect 1.0 → 0.96 on press, springs back",
-          "Applied to QuickActionButton, PrimaryButton, toolbar"],
+         ["ប្រើ @GestureState + DragGesture(minimumDistance:0)",
+          "scaleEffect 1.0 → 0.96 ពេលចុច ត្រឡប់វិញ",
+          "ប្រើលើ QuickActionButton, PrimaryButton, toolbar"],
          [".scalePress()   // on any tappable view",
           "// spring(response:0.3, dampingFraction:0.6)"]),
-        ("List Rows (Per-Row)", GREEN,
+        ("List Rows (ក្នុងrow)", GREEN,
          ["PestGuideTabView: enumerated ForEach",
           "Each row: .fadeIn(delay: Double(index) * 0.05)",
-          "Max ~20 rows × 0.05 = 1.0 s total stagger"],
+          "Max ~20 rows × 0.05 = 1.0 វ stagger សរុប"],
          ["ForEach(Array(pests.enumerated()), ...) {",
           "    PestRowView(pest: pest)",
           "        .fadeIn(delay: Double(index) * 0.05)"]),
@@ -516,7 +516,7 @@ def slide_08(prs):
     ], 6.75, 1.5, 6.25, 2.65, size=9.5)
 
     # Trigger logic
-    add_text(s, "Show skeleton while refreshing in PestGuideTabView:", 0.4, 4.3, 12.5, 0.35,
+    add_text(s, "បង្ហាញ skeleton ពេល refresh ក្នុង PestGuideTabView:", 0.4, 4.3, 12.5, 0.35,
              size=13, bold=True, color=WHITE)
     add_code(s, [
         "if isLoading {",
@@ -537,14 +537,14 @@ def slide_08(prs):
 def slide_09(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🌙  Dark Mode Support", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "🌙  ការគាំទ្រ Dark Mode", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=PURPLE)
 
-    add_text(s, "SwiftUI adaptive color system — automatic dark mode:", 0.4, 1.0, 12.5, 0.38,
+    add_text(s, "ប្រព័ន្ធ adaptive color SwiftUI — dark mode ស្វ័យប្រវត្តិ:", 0.4, 1.0, 12.5, 0.38,
              size=14, color=GREY)
 
     # Color table
-    headers = ["Color Usage", "SwiftUI Idiom", "Adapts Automatically"]
+    headers = ["ការប្រើ Color", "SwiftUI Idiom", "ស្ដាប់ Dynamic Mode"]
     col_x = [0.4, 5.2, 10.0]
     col_w = [4.6, 4.6, 3.0]
 
@@ -571,10 +571,9 @@ def slide_09(prs):
             add_text(s, cell, col_x[j] + 0.1, row_y + 0.08, col_w[j] - 0.2, 0.36,
                      size=11, color=cell_color)
 
-    add_text(s, "Key Rule:", 0.4, 5.15, 2.0, 0.35, size=13, bold=True, color=YELLOW)
+    add_text(s, "ច្បាប់សំខាន់:", 0.4, 5.15, 2.0, 0.35, size=13, bold=True, color=YELLOW)
     add_text(s,
-             "Prefer semantic UIColor names (systemBackground, label, secondaryLabel) over "
-             "hardcoded hex values. SwiftUI automatically switches them in dark mode.",
+             "ប្រើឈ្មោះ semantic UIColor (systemBackground, label) ជាជំនួស hex hardcoded។ SwiftUI ផ្លាស់ប្ដូរដោយស្វ័យប្រវត្តិ",
              2.4, 5.15, 10.6, 0.55, size=12, color=WHITE)
     add_text(s, "Test dark mode: Simulator → Features → Toggle Appearance  (Cmd+Shift+A)",
              0.4, 5.8, 12.5, 0.38, size=11, italic=True, color=GREY)
@@ -589,18 +588,18 @@ def slide_09(prs):
 def slide_10(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "♿  Accessibility", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "♿  ភាពងាយស្រួលប្រើ", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=PINK)
 
     # Left column — modifiers
-    add_text(s, "Accessibility Modifiers Used", 0.4, 1.0, 6.0, 0.38,
+    add_text(s, "Accessibility Modifiers ដែលប្រើ", 0.4, 1.0, 6.0, 0.38,
              size=15, bold=True, color=WHITE)
     modifiers = [
-        (".accessibilityLabel(\"...\")", "Replaces default label for VoiceOver"),
-        (".accessibilityHint(\"...\")", "Describes what happens on activation"),
-        (".accessibilityElement(children: .combine)", "Groups sub-elements into one focusable unit"),
-        (".accessibilityLabel(pest.name ?? \"\")", "Per-row label in PestGuide list"),
-        ("NavigationView label", "Added to top-level nav for screen identity"),
+        (".accessibilityLabel(\"...\")", "ជំនួស label លំនាំដើម សម្រាប់ VoiceOver"),
+        (".accessibilityHint(\"...\")", "ពិពណ៌នា អ្វីដែលកើតឡើងពេល activate"),
+        (".accessibilityElement(children: .combine)", "ដាក់ sub-elements ក្នុង unit ដែល focus បាន"),
+        (".accessibilityLabel(pest.name ?? \"\")", "label ក្នុង row នីមួយៗ PestGuide list"),
+        ("NavigationView label", "បន្ថែមទៅ nav កម្រិតខ្ពស់ ដើម្បី identity screen"),
     ]
     for i, (mod, desc) in enumerate(modifiers):
         row_y = 1.48 + i * 0.88
@@ -635,7 +634,7 @@ def slide_10(prs):
     add_text(s, "Dynamic Type:", 0.4, 6.0, 2.5, 0.32,
              size=12, bold=True, color=YELLOW)
     add_text(s,
-             "Use .font(.headline), .font(.caption) — NOT fixed Pt sizes — so text scales with user preferences.",
+             "ប្រើ .font(.headline), .font(.caption) — ជំនួស Pt fixed — ឱ្យ text scale ទៅតាម preferences",
              2.85, 6.0, 10.0, 0.38, size=12, color=WHITE)
 
     slide_number(s, 10)
@@ -648,23 +647,23 @@ def slide_10(prs):
 def slide_11(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📊  Before vs After — Week 9 Polish", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "📊  មុន vs ក្រោយ — ការតុបតែង Week 9", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=YELLOW)
 
     # Before column
     add_rect(s, 0.3, 1.0, 6.0, 6.1, CARD)
     add_rect(s, 0.3, 1.0, 6.0, 0.45, RGBColor(0xE5, 0x47, 0x47))
-    add_text(s, "❌  Before (Week 8)", 0.4, 1.04, 5.8, 0.38,
+    add_text(s, "❌  មុន (Week 8)", 0.4, 1.04, 5.8, 0.38,
              size=14, bold=True, color=WHITE)
     before_items = [
-        "Inline styling repeated in every view",
-        "Buttons respond instantly — no tactile feedback",
-        "Lists appear all at once — jarring",
-        "No pull-to-refresh on any screen",
-        "Empty states show plain grey text",
-        "VoiceOver reads raw element children",
-        "Hardcoded white backgrounds break in dark mode",
-        "No loading indicator while data loads",
+        "Inline styling ដដែលៗរៀងរាល់ View",
+        "Buttons ឆ្លើយតបភ្លាមៗ — គ្មាន tactile feedback",
+        "Lists លោតចេញតែមួយដង — ខ្ទាស",
+        "គ្មាន pull-to-refresh លើ screen ណាមួយ",
+        "Empty states បង្ហាញ text ប្រផេះធម្មតា",
+        "VoiceOver អានតែ elements ដើម",
+        "White backgrounds hardcoded ខូចក្នុង dark mode",
+        "គ្មាន loading indicator ពេលទាញទិន្នន័យ",
     ]
     add_bullets(s, before_items, 0.45, 1.55, 5.7, 5.3,
                 size=12, color=GREY, bullet_color=RGBColor(0xE5, 0x47, 0x47))
@@ -672,17 +671,17 @@ def slide_11(prs):
     # After column
     add_rect(s, 6.8, 1.0, 6.2, 6.1, CARD)
     add_rect(s, 6.8, 1.0, 6.2, 0.45, GREEN)
-    add_text(s, "✅  After (Week 9)", 6.9, 1.04, 5.9, 0.38,
+    add_text(s, "✅  ក្រោយ (Week 9)", 6.9, 1.04, 5.9, 0.38,
              size=14, bold=True, color=DARK)
     after_items = [
-        ".farmCard() modifier centralises all card styling",
-        ".scalePress() gives springy tactile press animation",
-        ".fadeIn(delay:) staggers row appearance smoothly",
-        ".refreshable {} on Dashboard, Finance, PestGuide",
-        "EmptyStateView with icon + title + action button",
-        "accessibilityLabel on every focusable element",
-        "Color(.systemBackground) auto-adapts light/dark",
-        "LoadingRowView skeleton while refreshing",
+        ".farmCard() modifier ប្រមូលរំដោះ card styling ទាំងអស់",
+        ".scalePress() ឱ្យ animation ចុចដូចស្ព្រីង",
+        ".fadeIn(delay:) ធ្វើ rows លេចចេញម្ដងៗ",
+        ".refreshable {} លើ Dashboard, Finance, PestGuide",
+        "EmptyStateView ជាមួយ icon + title + button",
+        "accessibilityLabel លើ elements focus-able ទាំងអស់",
+        "Color(.systemBackground) ស្ដាប់ light/dark ដោយស្វ័យ",
+        "LoadingRowView skeleton ពេល refresh",
     ]
     add_bullets(s, after_items, 6.95, 1.55, 5.9, 5.3,
                 size=12, color=WHITE, bullet_color=GREEN)
@@ -697,42 +696,42 @@ def slide_11(prs):
 def slide_12(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🎯  Summary & What's Next", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "🎯  សង្ខេប & ជំហានបន្ទាប់", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=GREEN)
 
-    add_text(s, "Week 9 Deliverables", 0.4, 1.0, 6.2, 0.38,
+    add_text(s, "លទ្ធផល Week 9", 0.4, 1.0, 6.2, 0.38,
              size=16, bold=True, color=WHITE)
     deliverables = [
-        "Components/ViewModifiers.swift — 5 modifiers + View extensions",
+        "Components/ViewModifiers.swift — modifiers 5 + View extensions",
         "Components/FarmCard.swift — generic card container",
-        "Components/PrimaryButton.swift — 3 button variants",
+        "Components/PrimaryButton.swift — button variants ០៣",
         "Components/SectionHeader.swift — header + skeleton + empty state",
         "Dashboard: fade-in stagger, pull-to-refresh, accessibility labels",
-        "PestGuide: per-row fade, skeleton loading, refreshable list",
-        "Finance: staggered summary cards, pull-to-refresh",
+        "PestGuide: fade ក្នុង row, skeleton loading, refreshable list",
+        "Finance: summary cards staggered, pull-to-refresh",
     ]
     add_bullets(s, deliverables, 0.4, 1.45, 6.3, 4.2,
                 size=12.5, bullet_color=GREEN)
 
-    add_text(s, "Coming Up — Week 10", 7.0, 1.0, 5.9, 0.38,
+    add_text(s, "ខាងមុខ — Week 10", 7.0, 1.0, 5.9, 0.38,
              size=16, bold=True, color=WHITE)
     next_items = [
-        "CloudKit sync — share farm data across devices",
-        "WidgetKit — farm summary on the Home Screen",
-        "App Store submission checklist",
-        "TestFlight internal distribution",
-        "Performance profiling with Instruments",
+        "CloudKit sync — ចែករំលែកទិន្នន័យចម្ការ",
+        "WidgetKit — សង្ខេបចម្ការ Home Screen",
+        "Checklist ដាក់ App Store",
+        "TestFlight distribution ខាងក្នុង",
+        "Performance profiling ជាមួយ Instruments",
     ]
     add_bullets(s, next_items, 7.0, 1.45, 5.9, 3.5,
                 size=12.5, bullet_color=BLUE)
 
     # Key takeaway
     add_rect(s, 0.3, 5.85, 12.75, 1.25, GREEN)
-    add_text(s, "💡  Key Takeaway",
+    add_text(s, "💡  ចំណាំសំខាន់",
              0.55, 5.9, 12.3, 0.38, size=14, bold=True, color=DARK)
     add_text(s,
-             "Polished UX is not about adding complexity — it's about applying consistent patterns "
-             "(ViewModifiers, reusable components) that make every interaction feel intentional.",
+             "UX ស្អាតមិនមែនអំពីការបន្ថែម complexity — វាអំពីការប្រើ patterns ស៊ីសង្វាក់ "
+             "(ViewModifiers, reusable components) ដែលធ្វើ interactions ទាំងអស់ ចេះចង់",
              0.55, 6.28, 12.3, 0.65, size=12.5, color=DARK)
 
     slide_number(s, 12)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Week 8 Dashboard Tab slide deck."""
+"""Generate Week 8 ផ្ទាំងគ្រប់គ្រង slide deck."""
 
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
@@ -136,21 +136,21 @@ add_text(slide, "SmartFarmer Assistant · iOS SwiftUI Course",
 # Title
 add_text(slide, "Week 8", 0.3, 0.9, 12, 1.0,
          size=52, bold=True, color=GREEN)
-add_text(slide, "Dashboard Tab",
+add_text(slide, "ផ្ទាំងគ្រប់គ្រង",
          0.3, 1.75, 12, 1.0, size=40, bold=True, color=WHITE)
 
 # Subtitle
 add_text(slide,
-         "Aggregating data across Finance, Calendar & Journal\n"
-         "into a single overview screen",
+         "ប្រមូលទិន្នន័យពី ហិរញ្ញវត្ថុ ប្រតិទិន & កំណត់ហេតុ\n"
+         "ចូលក្នុងផ្ទាំងមើលតែមួយ",
          0.3, 2.85, 10, 1.2, size=20, color=GREY)
 
 # Module pills
 pill_data = [
-    (0.3,  4.3, GREEN,  "💰  Finance"),
-    (2.6,  4.3, BLUE,   "📅  Calendar"),
-    (4.9,  4.3, PURPLE, "📖  Journal"),
-    (7.2,  4.3, ORANGE, "⚡  Quick Actions"),
+    (0.3,  4.3, GREEN,  "💰  ហិរញ្ញវត្ថុ"),
+    (2.6,  4.3, BLUE,   "📅  ប្រតិទិន"),
+    (4.9,  4.3, PURPLE, "📖  កំណត់ហេតុ"),
+    (7.2,  4.3, ORANGE, "⚡  សកម្មភាពរហ័ស"),
 ]
 for px, py, pc, pt in pill_data:
     add_rect(slide, px, py, 2.1, 0.5, pc)
@@ -159,36 +159,36 @@ for px, py, pc, pt in pill_data:
 # ── Slide 2: Learning Objectives ────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.1, DARK2)
-add_text(slide, "🎯  Learning Objectives", 0.4, 0.2, 12, 0.7,
+add_text(slide, "🎯  គោលបំណងរៀន", 0.4, 0.2, 12, 0.7,
          size=28, bold=True, color=GREEN)
 
 objectives = [
-    "Fetch data from multiple Core Data entities in one view",
-    "Compute monthly profit/loss using pure ViewModel functions",
-    "Build a gradient summary card with conditional colour",
-    "Create a reusable DashboardSection<Content: View> component",
-    "Wire Quick Action buttons to open Add sheets from the Dashboard",
-    "Add a new tab to MainTabView without breaking existing deep links",
+    "ទាញទិន្នន័យពី CoreData entities ច្រើននៅក្នុង View តែមួយ",
+    "គណនាចំណេញ/ខាតប្រចាំខែដោយ ViewModel functions ស្អាត",
+    "សាងសង់ gradient card ជាមួយ conditional color",
+    "បង្កើត component DashboardSection<Content: View> ប្រើបានម្ដងហើយម្ដងទៀត",
+    "ភ្ជាប់ Quick Action buttons ទៅ Add sheets ពី Dashboard",
+    "បន្ថែម Tab ថ្មីទៅ MainTabView ដោយមិនខូច deep links ដែលមានស្រាប់",
 ]
 add_bullets(slide, objectives, 0.5, 1.3, 12.5, 5.5, size=19)
 
 # ── Slide 3: Dashboard Overview ─────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "📊  Dashboard — What It Shows",
+add_text(slide, "📊  ផ្ទាំងគ្រប់គ្រង — ចំណុចបង្ហាញ",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 sections = [
-    (GREEN,  "Monthly P&L Card",
-             "Net profit/loss · Income · Expense · Gradient colour (green = profit)"),
-    (GREEN,  "Recent Transactions",
-             "Last 3 transactions — type icon, note/category, date, amount"),
-    (BLUE,   "Upcoming Activities",
-             "Next 3 pending tasks — type icon, title, date, reminder bell"),
-    (PURPLE, "Latest Journal Entry",
-             "Most recent entry — weather icon, title, snippet, photo count"),
-    (ORANGE, "Quick Actions",
-             "3 buttons: Add Transaction · Add Activity · Add Journal Entry"),
+    (GREEN,  "កាតចំណេញ/ខាតប្រចាំខែ",
+             "ចំណេញ/ខាតសុទ្ធ · ចំណូល · ចំណាយ · Gradient color (បៃតង = ចំណេញ)"),
+    (GREEN,  "ប្រតិបត្តិការថ្មីៗ",
+             "ប្រតិបត្តិការ ៣ ចុងក្រោយ — icon ប្រភេទ, note/category, កាលបរិច្ឆេទ, ចំនួន"),
+    (BLUE,   "សកម្មភាពខាងមុខ",
+             "ភារកិច្ចរង់ចាំ ៣ ខាងមុខ — icon ប្រភេទ, title, កាលបរិច្ឆេទ, កណ្ដឹងរំលឹក"),
+    (PURPLE, "កំណត់ហេតុថ្មីបំផុត",
+             "entry ចុងក្រោយ — icon អាកាសធាតុ, title, snippet, ចំនួនរូបថត"),
+    (ORANGE, "សកម្មភាពរហ័ស",
+             "៣ buttons: បន្ថែមប្រតិបត្តិការ · បន្ថែមសកម្មភាព · បន្ថែមកំណត់ហេតុ"),
 ]
 for i, (color, title, desc) in enumerate(sections):
     y = 1.15 + i * 1.1
@@ -199,11 +199,11 @@ for i, (color, title, desc) in enumerate(sections):
 # ── Slide 4: Architecture ────────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🏛  Architecture — Cross-Module Data Flow",
+add_text(slide, "🏛  ស្ថាបត្យកម្ម — លំហូរទិន្នន័យ",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Left column: data sources
-add_text(slide, "Core Data Stores", 0.4, 1.1, 4, 0.5,
+add_text(slide, "ទំនាក់ទំនង CoreData", 0.4, 1.1, 4, 0.5,
          size=15, bold=True, color=GREY, align=PP_ALIGN.CENTER)
 stores = [
     (GREEN,  "Transaction"),
@@ -253,13 +253,13 @@ for i, (c, m) in enumerate(zip([GREEN, BLUE, PURPLE], vm_methods)):
              italic=True)
 
 add_text(slide,
-         "Dashboard is read-only — it never writes to Core Data directly.",
+         "Dashboard អានបានតែប៉ុណ្ណោះ — មិនសរសេរ CoreData ផ្ទាល់ឡើយ",
          0.4, 6.6, 12.5, 0.5, size=14, color=ORANGE, italic=True)
 
 # ── Slide 5: DashboardViewModel ─────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "⚙️  DashboardViewModel — Pure Functions",
+add_text(slide, "⚙️  DashboardViewModel — អនុគមន៍ស្អាត",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 code = [
@@ -284,14 +284,14 @@ code = [
 add_code(slide, code, 0.3, 1.1, 7.8, 5.9)
 
 # Right panel: key points
-add_text(slide, "Key Design Rules", 8.4, 1.1, 4.6, 0.5,
+add_text(slide, "គោលការណ៍ Design", 8.4, 1.1, 4.6, 0.5,
          size=17, bold=True, color=GREEN)
 points = [
-    "Receives plain [Entity] arrays\n→ no Core Data context in VM",
-    "@FetchRequest belongs in the\nView, not the ViewModel",
-    "Pure functions = easy to\nunit test without Core Data",
-    "currentMonthTransactions() is\nprivate — only VM uses it",
-    "limit: Int = 3 default\n→ callers can override",
+    "ទទួល arrays [Entity] ធម្មតា\n→ គ្មាន Core Data context ក្នុង VM",
+    "@FetchRequest ត្រូវនៅក្នុង View\nមិនមែននៅ ViewModel",
+    "Pure functions = ងាយធ្វើ\nunit test ដោយគ្មាន Core Data",
+    "currentMonthTransactions() ជា\nprivate — VM ប្រើតែម្នាក់ឯង",
+    "limit: Int = 3 ជា default\n→ caller អាចផ្លាស់ប្ដូរបាន",
 ]
 for i, pt in enumerate(points):
     y = 1.75 + i * 1.1
@@ -301,7 +301,7 @@ for i, pt in enumerate(points):
 # ── Slide 6: Monthly P&L Card ────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "💳  Monthly Profit / Loss Card",
+add_text(slide, "💳  កាតចំណេញ / ខាតប្រចាំខែ",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Mock card — profit state
@@ -334,7 +334,7 @@ add_text(slide, "❌ Loss",   7.7, 4.1, 3, 0.5, size=16, bold=True, color=RED,  
 
 # Key point
 add_text(slide,
-         "isProfit flag drives both the gradient colour AND the arrow SF Symbol — computed once, used twice.",
+         "isProfit flag ដំណើរការ gradient color AND SF Symbol ព្រមគ្នា — គណនាម្ដង ប្រើពីរ",
          0.3, 4.75, 12.7, 0.6, size=15, color=GREY, italic=True)
 
 # Code snippet
@@ -353,7 +353,7 @@ add_code(slide, code2, 0.3, 5.4, 12.7, 1.9)
 # ── Slide 7: DashboardSection Component ─────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🧩  Reusable DashboardSection<Content: View>",
+add_text(slide, "🧩  DashboardSection<Content: View> ប្រើបានម្ដងហើយម្ដងទៀត",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 code3 = [
@@ -381,17 +381,17 @@ code3 = [
 ]
 add_code(slide, code3, 0.3, 1.1, 7.8, 5.8)
 
-add_text(slide, "Why @ViewBuilder?", 8.4, 1.1, 4.5, 0.4,
+add_text(slide, "ហេតុអ្វី @ViewBuilder?", 8.4, 1.1, 4.5, 0.4,
          size=16, bold=True, color=ORANGE)
 add_text(slide,
-         "Without @ViewBuilder, the closure\n"
-         "can only have ONE expression.\n\n"
-         "With @ViewBuilder, callers can write\n"
-         "if, ForEach, multiple rows —\n"
-         "full SwiftUI DSL syntax.",
+         "ដោយគ្មាន @ViewBuilder closure\n"
+         "អាចមាន expression តែMỘT។\n\n"
+         "ជាមួយ @ViewBuilder caller\n"
+         "អាចសរសេរ if, ForEach, rows ច្រើន —\n"
+         "complete SwiftUI DSL syntax",
          8.4, 1.65, 4.5, 2.2, size=14, color=WHITE)
 
-add_text(slide, "Usage:", 8.4, 4.0, 4.5, 0.4, size=15, bold=True, color=GREEN)
+add_text(slide, "ការប្រើប្រាស់:", 8.4, 4.0, 4.5, 0.4, size=15, bold=True, color=GREEN)
 code_usage = [
     'DashboardSection(',
     '    title: "ប្រតិបត្តិការ",',
@@ -408,7 +408,7 @@ add_code(slide, code_usage, 8.3, 4.45, 4.7, 2.5, size=12)
 # ── Slide 8: Quick Actions ───────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "⚡  Quick Actions",
+add_text(slide, "⚡  សកម្មភាពរហ័ស",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Mock quick-action buttons
@@ -429,7 +429,7 @@ for bx, bc, _, bt in button_data:
              bold=True, color=bc, align=PP_ALIGN.CENTER)
 
 add_text(slide,
-         "Each button sets a @State Bool flag → .sheet(isPresented:) opens the correct Add view.",
+         "Button នីមួយៗ កំណត់ @State Bool flag → .sheet(isPresented:) បើក Add view ត្រឹមត្រូវ",
          0.4, 3.5, 12.5, 0.5, size=15, color=GREY, italic=True)
 
 code4 = [
@@ -450,12 +450,12 @@ add_code(slide, code4, 0.3, 4.1, 12.7, 3.0)
 # ── Slide 9: Updating MainTabView ────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🔧  Updating MainTabView — Adding Tab 0",
+add_text(slide, "🔧  ធ្វើបច្ចុប្បន្នភាព MainTabView — បន្ថែម Tab 0",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 # Before / After comparison
-add_text(slide, "Before (Week 7)",  0.3, 1.1, 5.8, 0.4, size=15, bold=True, color=RED)
-add_text(slide, "After (Week 8)",   7.1, 1.1, 5.8, 0.4, size=15, bold=True, color=GREEN)
+add_text(slide, "មុន (Week 7)",  0.3, 1.1, 5.8, 0.4, size=15, bold=True, color=RED)
+add_text(slide, "ក្រោយ (Week 8)",   7.1, 1.1, 5.8, 0.4, size=15, bold=True, color=GREEN)
 
 before = [
     "FinanceTabView()    .tag(0)",
@@ -481,33 +481,33 @@ add_code(slide, after,  6.8, 1.6, 6.2, 3.2)
 
 add_rect(slide, 0.3, 5.05, 12.7, 0.05, GREEN)
 
-add_text(slide, "⚠️  Rule: always use explicit .tag() — implicit indices break silently when tabs are reordered.",
+add_text(slide, "⚠️  ច្បាប់: ប្រើ .tag() ច្បាស់លាស់ — indices ប្រូតស្ងៀមមួយ ខូចដោយមិនដឹង",
          0.4, 5.2, 12.5, 0.5, size=14, color=ORANGE)
-add_text(slide, "⚠️  Update ALL hardcoded tab indices (here: the notification deep link).",
+add_text(slide, "⚠️  ធ្វើបច្ចុប្បន្នភាព tab indices hardcoded ទាំងអស់ (notification deep link)",
          0.4, 5.75, 12.5, 0.5, size=14, color=ORANGE)
 
 # ── Slide 10: Common Mistakes ────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🐛  Common Mistakes",
+add_text(slide, "🐛  កំហុសសំខាន់",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 mistakes = [
-    ("Forget .tag() after reordering",
-     "Notification jumps to wrong tab silently",
-     "Always use explicit integer tags on every tab"),
-    ("P&L logic in body computed property",
-     "Business logic buried in the view",
-     "Move to DashboardViewModel as a pure function"),
-    ("Hold FetchedResults<T> in ViewModel",
-     "@FetchRequest only works inside a View",
-     "Pass Array(results) to the ViewModel method"),
-    ("Miss @ViewBuilder on DashboardSection",
+    ("ភ្លេច .tag() ក្រោយ reorder",
+     "Notification ចូល tab ខុស ដោយស្ងៀម",
+     "ប្រើ integer tags ច្បាស់ជានិច្ចរៀងរាល់ tab"),
+    ("Logic P&L នៅ body computed property",
+     "Business logic លាក់ក្នុង View",
+     "ផ្ទេរទៅ DashboardViewModel ជា pure function"),
+    ("ទុក FetchedResults<T> ក្នុង ViewModel",
+     "@FetchRequest ដំណើរការតែក្នុង View",
+     "ផ្ញើ Array(results) ទៅ method ViewModel"),
+    ("ខ្វះ @ViewBuilder លើ DashboardSection",
      "Compiler error: cannot use result builder",
-     "Add @ViewBuilder to the closure parameter"),
-    ("Omit .buttonStyle(PlainButtonStyle())",
-     "Entire button row turns blue on press",
-     "Add .buttonStyle(PlainButtonStyle()) to QuickActionButton"),
+     "បន្ថែម @ViewBuilder ទៅ closure parameter"),
+    ("ភ្លេច .buttonStyle(PlainButtonStyle())",
+     "row button ទាំងមូលប្រែពណ៌ខៀវពេលចុច",
+     "បន្ថែម .buttonStyle(PlainButtonStyle()) ទៅ QuickActionButton"),
 ]
 for i, (mistake, problem, fix) in enumerate(mistakes):
     y = 1.15 + i * 1.15
@@ -520,17 +520,17 @@ for i, (mistake, problem, fix) in enumerate(mistakes):
 # ── Slide 11: UI / UX Summary ────────────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "🎨  UI / UX Summary",
+add_text(slide, "🎨  សង្ខេប UI / UX",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 ux_items = [
-    (GREEN,  "square.grid.2x2.fill", "Tab icon", "ផ្ទាំងគ្រប់គ្រង"),
-    (GREEN,  "arrow.up.right.circle.fill", "P&L positive", "Green gradient + up arrow"),
-    (RED,    "arrow.down.right.circle.fill", "P&L negative", "Red gradient + down arrow"),
-    (GREEN,  "dollarsign.circle.fill", "Finance section", "Green accent"),
-    (BLUE,   "calendar.badge.clock", "Calendar section", "Blue accent"),
-    (PURPLE, "book.fill", "Journal section", "Purple accent"),
-    (ORANGE, "bolt.fill", "Quick Actions header", "Orange accent"),
+    (GREEN,  "square.grid.2x2.fill", "រូបតំណាង Tab", "ផ្ទាំងគ្រប់គ្រង"),
+    (GREEN,  "arrow.up.right.circle.fill", "P&L វិជ្ជមាន", "Green gradient + ព្រួញឡើង"),
+    (RED,    "arrow.down.right.circle.fill", "P&L អវិជ្ជមាន", "Red gradient + ព្រួញចុះ"),
+    (GREEN,  "dollarsign.circle.fill", "ផ្នែកហិរញ្ញវត្ថុ", "Green accent"),
+    (BLUE,   "calendar.badge.clock", "ផ្នែកប្រតិទិន", "Blue accent"),
+    (PURPLE, "book.fill", "ផ្នែកកំណត់ហេតុ", "Purple accent"),
+    (ORANGE, "bolt.fill", "header សកម្មភាពរហ័ស", "Orange accent"),
 ]
 
 col_w = 5.8
@@ -555,31 +555,31 @@ if len(ux_items) % 2 == 1:
 # ── Slide 12: Summary & Next Steps ───────────────────────────────────────────
 slide = add_slide(prs)
 add_rect(slide, 0, 0, W, 1.0, DARK2)
-add_text(slide, "✅  Week 8 Summary",
+add_text(slide, "✅  សង្ខេប Week 8",
          0.4, 0.15, 12, 0.7, size=26, bold=True, color=WHITE)
 
 achieved = [
-    "Built DashboardViewModel with pure functions for monthly P&L, recent items & upcoming tasks",
-    "Created a conditional-colour LinearGradient hero card",
-    "Factored DashboardSection<Content: View> to eliminate repeated card frames",
-    "Wrote three row views — one per data source — keeping detail level appropriate for a dashboard",
-    "Wired Quick Action buttons to AddTransactionView, AddActivityView, AddJournalEntryView",
-    "Updated MainTabView: inserted Dashboard as tab 0, updated notification deep link to tab 2",
+    "បានបង្កើត DashboardViewModel ជាមួយ pure functions សម្រាប់ P&L ប្រចាំខែ, items ថ្មីៗ & ភារកិច្ចខាងមុខ",
+    "បានបង្កើត hero card LinearGradient conditional-color",
+    "បានបង្កើត DashboardSection<Content: View> ដើម្បីកម្ចាត់ card frames ដែលដូចគ្នា",
+    "បានសរសេរ row views ០៣ — មួយសម្រាប់ data source នីមួយៗ",
+    "ភ្ជាប់ Quick Action buttons ទៅ AddTransactionView, AddActivityView, AddJournalEntryView",
+    "ធ្វើបច្ចុប្បន្នភាព MainTabView: បន្ថែម Dashboard ជា tab 0, ធ្វើបច្ចុប្បន្នភាព notification deep link ទៅ tab 2",
 ]
-add_text(slide, "What we built:", 0.4, 1.1, 12.5, 0.45, size=18, bold=True, color=GREEN)
+add_text(slide, "អ្វីដែលយើងបានបង្កើត:", 0.4, 1.1, 12.5, 0.45, size=18, bold=True, color=GREEN)
 add_bullets(slide, achieved, 0.5, 1.65, 12.3, 3.5, size=16)
 
 add_rect(slide, 0.3, 5.3, 12.7, 0.05, GREY)
 
-add_text(slide, "Extension ideas:", 0.4, 5.5, 12.5, 0.45, size=18, bold=True, color=ORANGE)
+add_text(slide, "គំនិតបន្ថែម:", 0.4, 5.5, 12.5, 0.45, size=18, bold=True, color=ORANGE)
 extensions = [
-    "Tap a Recent Transaction row → navigate directly to TransactionDetailView",
-    "Add a simple bar chart for last 6 months P&L using SwiftUI Path/Shape",
-    "Show a 'streak' counter for consecutive days with journal entries",
+    "ចុច row ប្រតិបត្តិការថ្មីៗ → រុករកដោយផ្ទាល់ទៅ TransactionDetailView",
+    "បន្ថែម bar chart សាមញ្ញ P&L ៦ ខែចុងក្រោយ ដោយ SwiftUI Path/Shape",
+    "បង្ហាញ 'streak' counter ចំពោះថ្ងៃជំនាប់ដែលមានកំណត់ហេតុ",
 ]
 add_bullets(slide, extensions, 0.5, 6.05, 12.3, 1.3, size=15, color=GREY)
 
 # ── Save ──────────────────────────────────────────────────────────────────────
 output = os.path.join(os.path.dirname(__file__), "Week08_Dashboard_Tab.pptx")
 prs.save(output)
-print(f"Saved: {output}")
+print(f"✅  Saved → {output}")

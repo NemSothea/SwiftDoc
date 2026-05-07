@@ -1,528 +1,299 @@
+# Week 01 — Project Setup & MVVM Architecture
 
-# 🌾 Week 1: Project Setup & MVVM Architecture
+![iOS](https://img.shields.io/badge/iOS-13%2B-blue) ![Swift](https://img.shields.io/badge/Swift-5.9-orange) ![SwiftUI](https://img.shields.io/badge/SwiftUI-✓-green) ![Xcode](https://img.shields.io/badge/Xcode-15%2B-blue)
 
-## Topic: Laying the Foundation with Clean Architecture
-
-### Learning Objectives
-By the end of this week, students will be able to:
-- Set up a professional Xcode project with proper folder structure
-- Understand and implement MVVM architecture with the new `@Observable` macro
-- Create Swift data models for agricultural tracking
-- Build a tab-based navigation interface
-- Connect basic UI to a ViewModel
+> **Project:** SmartFarmer Assistant — An agricultural management app for Cambodian farmers.
 
 ---
 
-## 📚 Lesson 1.1: Xcode Project Setup & Organization (45 minutes)
+## 🎯 Learning Objectives
 
-### 1.1.1 Creating the Project
-```swift
-// Step 1: Open Xcode → Create New Project → iOS → App
-// Step 2: Configure project:
-// - Product Name: SmartFarmerAssistant
-// - Team: (Your team)
-// - Organization Identifier: com.yourname
-// - Interface: SwiftUI
-// - Language: Swift
-// - Lifecycle: SwiftUI App
-// - Core Data: Unchecked (we'll use SwiftData)
+By the end of Week 01, students will be able to:
+- Create a professional Xcode project with proper folder structure
+- Explain and apply MVVM architecture
+- Define all four CoreData models (`Transaction`, `FarmActivity`, `Pest`, `JournalEntry`)
+- Build `FarmViewModel` using `ObservableObject` (iOS 13+)
+- Build `MainTabView` with four tabs and pass ViewModel via `.environmentObject()`
+
+---
+
+## ⚡ Quick Reference
+
+| File | Purpose |
+|---|---|
+| `App/SmartFarmerAssistantApp.swift` | Entry point `@main`, CoreData container |
+| `Models/Transaction+CoreData.swift` | Finance transaction entity |
+| `Models/FarmActivity+CoreData.swift` | Calendar activity entity |
+| `Models/Pest+CoreData.swift` | Pest/disease guide entity |
+| `Models/JournalEntry+CoreData.swift` | Daily journal entity |
+| `ViewModels/FarmViewModel.swift` | Central `ObservableObject` ViewModel |
+| `Views/MainTabView.swift` | Root 4-tab navigation |
+| `Utilities/CoreDataManager.swift` | Singleton CoreData stack |
+| `Utilities/Constants.swift` | App-wide strings and colors |
+
+---
+
+## ⚠️ iOS 13+ Rules
+
+This course targets **iOS 13+**. Always use:
+
+| ✅ iOS 13+ (Correct) | ❌ iOS 17+ Only |
+|---|---|
+| `class VM: ObservableObject` | `@Observable class VM` |
+| `@StateObject var vm: VM` | `@State var vm: VM` |
+| `@EnvironmentObject var vm: VM` | `@Environment(VM.self)` |
+| `.environmentObject(vm)` | `.environment(vm)` |
+| `NavigationView {}` | `NavigationStack {}` |
+
+---
+
+## 📚 Lesson 1.1 — MVVM Architecture (45 min)
+
+**Model → ViewModel → View**
+
+```
+Model               ViewModel              View
+─────────           ─────────────          ──────────────
+Transaction         FarmViewModel          FinanceTabView
+FarmActivity        ObservableObject       CalendarTabView
+Pest                @Published state       PestGuideTabView
+JournalEntry        Business logic         JournalTabView
 ```
 
-### 1.1.2 Professional Folder Structure
-Create the following folder structure in the project navigator:
+- **Model** — Pure data structs/classes. No UI code.
+- **ViewModel** — Owns state, performs CRUD, formats data for views.
+- **View** — SwiftUI `struct`. Reads ViewModel via `@EnvironmentObject`. Never writes to CoreData directly.
+
+---
+
+## 📚 Lesson 1.2 — Xcode Project Setup (30 min)
+
+1. **File → New → Project → iOS → App**
+2. Configure:
+   - Product Name: `SmartFarmerAssistant`
+   - Interface: `SwiftUI` · Language: `Swift`
+   - **Minimum Deployments: iOS 13.0**
+   - Uncheck "Use Core Data" (we set up manually)
+3. Create folder groups in the Project Navigator:
 
 ```
 SmartFarmerAssistant/
 ├── App/
 │   └── SmartFarmerAssistantApp.swift
 ├── Models/
-│   ├── Transaction.swift
-│   ├── FarmActivity.swift
-│   ├── Pest.swift
-│   └── JournalEntry.swift
+│   ├── Transaction+CoreDataClass.swift
+│   ├── Transaction+CoreDataProperties.swift
+│   ├── FarmActivity+CoreData*.swift
+│   ├── Pest+CoreData*.swift
+│   └── JournalEntry+CoreData*.swift
 ├── ViewModels/
 │   └── FarmViewModel.swift
 ├── Views/
 │   ├── MainTabView.swift
 │   ├── Finance/
-│   │   ├── FinanceTabView.swift
-│   │   └── TransactionRowView.swift
 │   ├── Calendar/
-│   │   └── CalendarTabView.swift
 │   ├── PestGuide/
-│   │   └── PestGuideTabView.swift
 │   └── Journal/
-│       └── JournalTabView.swift
 ├── Utilities/
-│   ├── Extensions/
+│   ├── CoreDataManager.swift
 │   └── Constants.swift
 └── Resources/
     └── Assets.xcassets
 ```
 
-**Live Demo:** Create each folder and explain the purpose of each directory.
+---
 
-### 1.1.3 Creating the App Entry Point
+## 📚 Lesson 1.3 — CoreData Models (45 min)
+
+### App Entry Point
+
 ```swift
 // App/SmartFarmerAssistantApp.swift
-import SwiftUI
-import SwiftData
-
 @main
 struct SmartFarmerAssistantApp: App {
+    let context = CoreDataManager.shared.context
+
     var body: some Scene {
         WindowGroup {
             MainTabView()
-        }
-        .modelContainer(for: [
-            Transaction.self,
-            FarmActivity.self,
-            Pest.self,
-            JournalEntry.self
-        ])
-    }
-}
-```
-
-**Explanation:** 
-- `@main` identifies the entry point
-- `modelContainer` sets up SwiftData for all our models (we'll define them next week)
-- `MainTabView()` will be our root view
-
----
-
-## 📚 Lesson 1.2: Understanding MVVM with @Observable (45 minutes)
-
-### 1.2.1 What is MVVM?
-- **Model**: Data structures (Transaction, FarmActivity, etc.)
-- **View**: SwiftUI views (what user sees)
-- **ViewModel**: Business logic, connects Model and View
-
-### 1.2.2 The New @Observable Macro (iOS 17+)
-```swift
-// Before (iOS 16 and earlier)
-class OldViewModel: ObservableObject {
-    @Published var transactions: [Transaction] = []
-    @Published var isLoading = false
-}
-
-// After (iOS 17+) - Simpler and more efficient
-@Observable
-class FarmViewModel {
-    var transactions: [Transaction] = []
-    var isLoading = false
-    var selectedTab = 0
-    
-    // Computed properties also trigger view updates
-    var totalBalance: Double {
-        transactions.reduce(0) { $0 + $1.amount }
-    }
-}
-```
-
-**Key Points:**
-- No more `@Published` wrapper
-- No more `ObservableObject` conformance
-- Any property change automatically updates views
-- Better performance (only observed properties trigger updates)
-
-### 1.2.3 Using @Observable in Views
-```swift
-struct ContentView: View {
-    // @State for local view state
-    @State private var viewModel = FarmViewModel()
-    
-    var body: some View {
-        VStack {
-            Text("Balance: $\(viewModel.totalBalance)")
-            
-            // Bind directly to properties
-            Picker("Tab", selection: Bindable(viewModel).selectedTab) {
-                Text("Finance").tag(0)
-                Text("Calendar").tag(1)
-            }
+                .environment(\.managedObjectContext, context)
         }
     }
 }
 ```
 
-**Live Demo:** Create a simple counter app to demonstrate @Observable in action.
+### Transaction (Finance)
 
----
-
-## 📚 Lesson 1.3: Creating Core Data Models (45 minutes)
-
-### 1.3.1 Transaction Model (for Finance Tracker)
 ```swift
-// Models/Transaction.swift
-import Foundation
-import SwiftData
-
-enum TransactionType: String, CaseIterable {
-    case expense = "ចំណាយ"      // Expense
-    case income = "ចំណូល"       // Income
+// Models/Transaction+CoreDataProperties.swift
+extension Transaction {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Transaction> {
+        return NSFetchRequest<Transaction>(entityName: "Transaction")
+    }
+    @NSManaged public var amount:   Double
+    @NSManaged public var date:     Date?
+    @NSManaged public var note:     String?
+    @NSManaged public var type:     String?   // "expense" | "income"
+    @NSManaged public var category: String?
+    @NSManaged public var id:       UUID?
 }
+extension Transaction: Identifiable {}
 
 enum ExpenseCategory: String, CaseIterable {
-    case seeds = "គ្រាប់ពូជ"        // Seeds
-    case fertilizer = "ជី"           // Fertilizer
-    case labor = "កម្លាំងពលកម្ម"    // Labor
-    case tools = "ឧបករណ៍"          // Tools
-    case other = "ផ្សេងៗ"           // Other
+    case seeds = "គ្រាប់ពូជ", fertilizer = "ជី",
+         labor = "កម្លាំងពលកម្ម", tools = "ឧបករណ៍", other = "ផ្សេងៗ"
 }
-
 enum IncomeCategory: String, CaseIterable {
-    case vegetable = "បន្លែ"         // Vegetables
-    case fruit = "ផ្លែឈើ"           // Fruits
-    case grain = "ស្រូវ-ដំណាំ"      // Grains/Crops
-    case livestock = "សត្វ"          // Livestock
-    case other = "ផ្សេងៗ"           // Other
-}
-
-@Model
-class Transaction {
-    var amount: Double
-    var date: Date
-    var note: String
-    var type: String  // "expense" or "income"
-    var category: String
-    
-    init(amount: Double, date: Date = Date(), note: String = "", type: String, category: String) {
-        self.amount = amount
-        self.date = date
-        self.note = note
-        self.type = type
-        self.category = category
-    }
-    
-    // Computed property for display
-    var categoryName: String {
-        if type == "expense" {
-            return ExpenseCategory(rawValue: category)?.rawValue ?? category
-        } else {
-            return IncomeCategory(rawValue: category)?.rawValue ?? category
-        }
-    }
-    
-    var isExpense: Bool { type == "expense" }
-    var isIncome: Bool { type == "income" }
+    case vegetable = "បន្លែ", fruit = "ផ្លែឈើ",
+         grain = "ស្រូវ-ដំណាំ", livestock = "សត្វ", other = "ផ្សេងៗ"
 }
 ```
 
-### 1.3.2 FarmActivity Model (for Calendar/Reminders)
+### FarmActivity (Calendar)
+
 ```swift
-// Models/FarmActivity.swift
-import Foundation
-import SwiftData
+extension FarmActivity {
+    @NSManaged public var id:              UUID?
+    @NSManaged public var title:           String?
+    @NSManaged public var activityType:    String?
+    @NSManaged public var date:            Date?
+    @NSManaged public var notes:           String?
+    @NSManaged public var isCompleted:     Bool
+    @NSManaged public var reminderEnabled: Bool
+}
 
 enum ActivityType: String, CaseIterable {
-    case planting = "ដាំ"           // Planting
-    case watering = "ស្រោចទឹក"     // Watering
-    case fertilizing = "ដាក់ជី"     // Fertilizing
-    case harvesting = "ប្រមូលផល"   // Harvesting
-    case pesticide = "បាញ់ថ្នាំ"    // Pesticide
-    case other = "ផ្សេងៗ"           // Other
-}
-
-@Model
-class FarmActivity {
-    var title: String
-    var activityType: String
-    var date: Date
-    var notes: String
-    var isCompleted: Bool
-    var reminderEnabled: Bool
-    
-    init(title: String, activityType: String, date: Date, notes: String = "", isCompleted: Bool = false, reminderEnabled: Bool = true) {
-        self.title = title
-        self.activityType = activityType
-        self.date = date
-        self.notes = notes
-        self.isCompleted = isCompleted
-        self.reminderEnabled = reminderEnabled
-    }
+    case planting = "ដាំ", watering = "ស្រោចទឹក",
+         fertilizing = "ដាក់ជី", harvesting = "ប្រមូលផល",
+         pesticide = "បាញ់ថ្នាំ", other = "ផ្សេងៗ"
 }
 ```
 
-### 1.3.3 Pest Model (for Pest Guide)
+### Pest & JournalEntry
+
 ```swift
-// Models/Pest.swift
-import Foundation
-import SwiftData
-
-enum PestType: String, CaseIterable {
-    case insect = "សត្វល្អិត"      // Insect
-    case fungal = "ផ្សិត"           // Fungal
-    case bacterial = "បាក់តេរី"     // Bacterial
-    case viral = "មេរោគ"            // Viral
+extension Pest {
+    @NSManaged public var id: UUID?
+    @NSManaged public var name: String?
+    @NSManaged public var pestType: String?
+    @NSManaged public var symptoms: String?
+    @NSManaged public var treatment: String?
+    @NSManaged public var prevention: String?
+    @NSManaged public var imageName: String?
+    @NSManaged public var isFavorite: Bool
 }
 
-@Model
-class Pest {
-    var name: String
-    var pestType: String
-    var symptoms: String
-    var treatment: String
-    var prevention: String
-    var imageName: String?
-    var isFavorite: Bool
-    
-    init(name: String, pestType: String, symptoms: String, treatment: String, prevention: String = "", imageName: String? = nil, isFavorite: Bool = false) {
-        self.name = name
-        self.pestType = pestType
-        self.symptoms = symptoms
-        self.treatment = treatment
-        self.prevention = prevention
-        self.imageName = imageName
-        self.isFavorite = isFavorite
-    }
+extension JournalEntry {
+    @NSManaged public var id: UUID?
+    @NSManaged public var date: Date?
+    @NSManaged public var content: String?
+    @NSManaged public var weather: String?
+    @NSManaged public var photoData: Data?
+    @NSManaged public var location: String?
 }
 ```
-
-### 1.3.4 JournalEntry Model (for Daily Journal)
-```swift
-// Models/JournalEntry.swift
-import Foundation
-import SwiftData
-
-enum WeatherType: String, CaseIterable {
-    case sunny = "ក្តៅហាប"      // Sunny
-    case rainy = "ភ្លៀង"        // Rainy
-    case cloudy = "ពពក"         // Cloudy
-    case windy = "ខ្យល់"        // Windy
-}
-
-@Model
-class JournalEntry {
-    var date: Date
-    var content: String
-    var weather: String
-    var photoData: Data?  // Store image as Data
-    var location: String?
-    
-    init(date: Date = Date(), content: String, weather: String = "sunny", photoData: Data? = nil, location: String? = nil) {
-        self.date = date
-        self.content = content
-        self.weather = weather
-        self.photoData = photoData
-        self.location = location
-    }
-}
-```
-
-**Live Demo:** Create all four model files and explain each property.
 
 ---
 
-## 📚 Lesson 1.4: Building FarmViewModel & MainTabView (45 minutes)
+## 📚 Lesson 1.4 — FarmViewModel (30 min)
 
-### 1.4.1 FarmViewModel (Central ViewModel)
 ```swift
 // ViewModels/FarmViewModel.swift
 import Foundation
-import SwiftUI
-import SwiftData
+import CoreData
 
-@Observable
-class FarmViewModel {
-    // MARK: - Properties
-    var selectedTab = 0
-    var isLoading = false
-    var errorMessage: String?
-    
-    // MARK: - Sample Data for Preview
-    static let preview: FarmViewModel = {
-        let vm = FarmViewModel()
-        // We'll add sample data next week with SwiftData
-        return vm
-    }()
-    
-    // MARK: - Helper Methods
-    func formatCurrency(_ amount: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencySymbol = "៛"  // Riel symbol
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: NSNumber(value: amount)) ?? "៛0"
+// ✅ ObservableObject for iOS 13+  ❌ Do NOT use @Observable (iOS 17+ only)
+class FarmViewModel: ObservableObject {
+
+    private var context: NSManagedObjectContext
+
+    init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
+        self.context = context
     }
-    
+
+    // MARK: - Formatters
+    func formatCurrency(_ amount: Double) -> String {
+        let f = NumberFormatter()
+        f.numberStyle = .currency
+        f.locale = Locale(identifier: "en_US")
+        return f.string(from: NSNumber(value: amount)) ?? "$0.00"
+    }
+
     func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "km-KH")  // Khmer locale
-        return formatter.string(from: date)
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "km-KH")
+        f.dateStyle = .medium
+        return f.string(from: date)
     }
 }
 ```
 
-### 1.4.2 MainTabView (Root View)
+---
+
+## 📚 Lesson 1.5 — MainTabView & Constants (30 min)
+
 ```swift
 // Views/MainTabView.swift
-import SwiftUI
-
 struct MainTabView: View {
-    @State private var viewModel = FarmViewModel()
-    
+    // ✅ @StateObject — this view OWNS the ViewModel
+    @StateObject private var viewModel: FarmViewModel
+    @State private var selectedTab = 0
+    @Environment(\.managedObjectContext) private var viewContext
+
+    init() {
+        _viewModel = StateObject(wrappedValue:
+            FarmViewModel(context: CoreDataManager.shared.context))
+    }
+
     var body: some View {
-        TabView(selection: Bindable(viewModel).selectedTab) {
+        TabView(selection: $selectedTab) {
             FinanceTabView()
-                .tabItem {
-                    Label("ហិរញ្ញវត្ថុ", systemImage: "dollarsign.circle")
-                }
+                .tabItem { Label("ហិរញ្ញវត្ថុ", systemImage: "dollarsign.circle") }
                 .tag(0)
-            
-            CalendarTabView()
-                .tabItem {
-                    Label("ប្រតិទិន", systemImage: "calendar")
-                }
-                .tag(1)
-            
-            PestGuideTabView()
-                .tabItem {
-                    Label("សត្វល្អិត", systemImage: "bug")
-                }
-                .tag(2)
-            
-            JournalTabView()
-                .tabItem {
-                    Label("កំណត់ហេតុ", systemImage: "book")
-                }
-                .tag(3)
+                .environment(\.managedObjectContext, viewContext)
+            // ... Calendar, PestGuide, Journal tabs
         }
-        .environment(viewModel)  // Pass ViewModel to all child views
-    }
-}
-
-// Placeholder Views for each tab
-struct FinanceTabView: View {
-    @Environment(FarmViewModel.self) private var viewModel
-    
-    var body: some View {
-        NavigationStack {
-            List {
-                Text("Finance Tab - Coming Soon")
-                Text("Total: \(viewModel.formatCurrency(0))")
-            }
-            .navigationTitle("កំណត់ត្រាចំណាយចំណូល")
-        }
-    }
-}
-
-struct CalendarTabView: View {
-    var body: some View {
-        NavigationStack {
-            Text("Calendar Tab - Coming Soon")
-                .navigationTitle("ប្រតិទិនដាំដំណាំ")
-        }
-    }
-}
-
-struct PestGuideTabView: View {
-    var body: some View {
-        NavigationStack {
-            Text("Pest Guide Tab - Coming Soon")
-                .navigationTitle("មគ្គុទេសក៍សត្វល្អិត")
-        }
-    }
-}
-
-struct JournalTabView: View {
-    var body: some View {
-        NavigationStack {
-            Text("Journal Tab - Coming Soon")
-                .navigationTitle("កំណត់ហេតុប្រចាំថ្ងៃ")
-        }
+        // ✅ Pass ViewModel to ALL child views
+        .environmentObject(viewModel)
     }
 }
 ```
 
-**Live Demo:** Build the MainTabView with all four tabs and run the app.
-
----
-
-## 📚 Lesson 1.5: Khmer Localization & Constants (Remaining time)
-
-### 1.5.1 Constants File
 ```swift
 // Utilities/Constants.swift
-import Foundation
-import SwiftUI
-
-struct AppColors {
-    static let primary = Color("PrimaryGreen")
-    static let expense = Color.red
-    static let income = Color.green
-    static let background = Color(.systemBackground)
-}
-
 struct AppStrings {
-    // Tab titles
-    static let financeTab = "ហិរញ្ញវត្ថុ"
+    static let financeTab  = "ហិរញ្ញវត្ថុ"
     static let calendarTab = "ប្រតិទិន"
-    static let pestTab = "សត្វល្អិត"
-    static let journalTab = "កំណត់ហេតុ"
-    
-    // Common buttons
-    static let save = "រក្សាទុក"
+    static let pestTab     = "សត្វល្អិត"
+    static let journalTab  = "កំណត់ហេតុ"
+    static let save   = "រក្សាទុក"
     static let cancel = "បោះបង់"
     static let delete = "លុប"
-    static let edit = "កែប្រែ"
-    static let add = "បន្ថែម"
-}
-```
-
-### 1.5.2 Date Extension for Khmer
-```swift
-// Utilities/Extensions/Date+Khmer.swift
-import Foundation
-
-extension Date {
-    func khmerFormat() -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "km-KH")
-        formatter.dateStyle = .full
-        return formatter.string(from: self)
-    }
+    static let add    = "បន្ថែម"
 }
 ```
 
 ---
 
-## 🏠 Week 1 Mini-Project Assignment
+## 🏠 Mini-Project Assignment
 
-### Task: Create the Foundation of Smart Farmer Assistant
+| Requirement | Weight |
+|---|---|
+| All folder groups created, project builds | 25% |
+| 4 CoreData model files with all properties | 30% |
+| `FarmViewModel` uses `ObservableObject` | 25% |
+| `MainTabView` with 4 Khmer-titled tabs + `.environmentObject()` | 20% |
 
-**Requirements:**
+**Bonus:** Add a 5th Dashboard tab showing a welcome message.
 
-1. **Project Structure (30%)**
-   - Create all folders as shown in lesson
-   - Verify project runs without errors
-
-2. **Data Models (30%)**
-   - Implement all 4 model classes exactly as shown
-   - Add at least 2 enum cases to each category
-
-3. **ViewModel & MainTabView (30%)**
-   - Implement FarmViewModel with @Observable
-   - Create MainTabView with all 4 tabs
-   - Pass ViewModel using `.environment()`
-
-4. **Khmer Language Support (10%)**
-   - Add formatCurrency with Riel symbol (៛)
-   - Ensure tab titles are in Khmer
-
-**Bonus Challenge (Optional):**
-- Add a 5th "Dashboard" tab that shows summary
-- Implement a simple animation when switching tabs
-
-**Submission Checklist:**
-- [ ] Project builds successfully
-- [ ] 4 model files exist with all properties
-- [ ] FarmViewModel uses @Observable
-- [ ] MainTabView shows 4 tabs with Khmer titles
-- [ ] Code is properly formatted and commented
+### Submission Checklist
+- [ ] Project builds with no errors
+- [ ] 4 `@NSManaged` model files exist
+- [ ] `FarmViewModel: ObservableObject` (not `@Observable`)
+- [ ] `MainTabView` shows 4 tabs with Khmer titles
+- [ ] `.environmentObject(viewModel)` passed from `MainTabView`
+- [ ] `CoreDataManager.shared` used in `App` entry point
 
 ---
 
-
+*End of Week 01 — Ready for CoreData CRUD in Week 02 →*

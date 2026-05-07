@@ -120,12 +120,12 @@ def slide_01(prs):
     add_text(s, "WEEK 10", 1.0, 1.2, 2.2, 0.5,
              size=14, bold=True, color=DARK, align=PP_ALIGN.CENTER)
 
-    add_text(s, "Data Export", 1.0, 1.9, 11.0, 1.0,
+    add_text(s, "នាំចេញទិន្នន័យ", 1.0, 1.9, 11.0, 1.0,
              size=46, bold=True, color=WHITE)
-    add_text(s, "& Reports", 1.0, 2.75, 11.0, 1.0,
+    add_text(s, "& របាយការណ៍", 1.0, 2.75, 11.0, 1.0,
              size=46, bold=True, color=ORANGE)
 
-    add_text(s, "SmartFarmerAssistant — Generating & Sharing Reports for Farmers",
+    add_text(s, "SmartFarmerAssistant — បង្កើត & ចែករំលែក របាយការណ៍ សម្រាប់កសិករ",
              1.0, 3.8, 11.0, 0.5, size=16, italic=True, color=GREY)
 
     icons = [
@@ -134,7 +134,7 @@ def slide_01(prs):
         ("🗒️", "PDFKit"),
         ("📤", "UIActivityVC"),
         ("💰", "P&L Reports"),
-        ("🌾", "Farmer UX"),
+        ("🌾", "UX កសិករ"),
     ]
     for i, (icon, label) in enumerate(icons):
         bx = 1.0 + i * 2.05
@@ -154,22 +154,22 @@ def slide_01(prs):
 def slide_02(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📋  Agenda — Week 10", 0.4, 0.12, 12.5, 0.7,
+    add_text(s, "📋  របៀបវារៈ — Week 10", 0.4, 0.12, 12.5, 0.7,
              size=26, bold=True, color=ORANGE)
 
     topics = [
-        ("01", ORANGE, "Custom Bar Charts",
-         "GeometryReader + Shape — iOS 13+, zero dependencies"),
+        ("01", ORANGE, "Bar Charts ផ្ទាល់ខ្លួន",
+         "GeometryReader + Shape — iOS 13+, គ្មាន dependencies"),
         ("02", BLUE,   "CSV Export",
-         "Build comma-separated reports — shareable anywhere"),
-        ("03", GREEN,  "PDFKit Basics",
+         "បង្កើតរបាយការណ៍ CSV — ចែករំលែកបានគ្រប់ទីកន្លែង"),
+        ("03", GREEN,  "PDFKit មូលដ្ឋាន",
          "PDFDocument + UIGraphicsPDFRenderer — iOS 11+"),
-        ("04", PURPLE, "PDF with Custom Drawing",
-         "Render text, lines, and bar charts into a PDF page"),
+        ("04", PURPLE, "PDF ជាមួយ Drawing ផ្ទាល់ខ្លួន",
+         "Render text, lines, bar charts ចូល PDF page"),
         ("05", TEAL,   "UIActivityViewController",
          "Share sheets — AirDrop, Mail, Files, Messages"),
-        ("06", GOLD,   "End-to-End Report Flow",
-         "Generate → Preview → Share in one farmer-friendly tap"),
+        ("06", GOLD,   "លំហូររបាយការណ៍ End-to-End",
+         "Generate → Preview → Share ក្នុង tap តែមួយ"),
     ]
 
     for i, (num, color, title, sub) in enumerate(topics):
@@ -192,16 +192,16 @@ def slide_02(prs):
 def slide_03(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📊  Custom Bar Chart — GeometryReader + Shape",
+    add_text(s, "📊  Bar Chart ផ្ទាល់ខ្លួន — GeometryReader + Shape",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=ORANGE)
 
-    add_text(s, "Why GeometryReader + Shape instead of Swift Charts?",
+    add_text(s, "ហេតុអ្វី GeometryReader + Shape ជំនួស Swift Charts?",
              0.4, 1.0, 12.5, 0.38, size=14, bold=True, color=WHITE)
     add_bullets(s, [
-        "Swift Charts requires iOS 16+ — our target is iOS 13",
-        "GeometryReader gives proportional sizing inside any layout",
-        "Shape protocol lets us draw filled rectangles precisely",
-        "Full control over colours, spacing, labels, and animations",
+        "Swift Charts ត្រូវការ iOS 16+ — target យើង iOS 13",
+        "GeometryReader ឱ្យ sizing ដែលសមស្របក្នុង layout ណាមួយ",
+        "Shape protocol ឱ្យយើង draw rectangles បានត្រឹមត្រូវ",
+        "Control ពេញលេញ colors, spacing, labels, animations",
     ], 0.4, 1.45, 6.0, 1.85, size=13, bullet_color=ORANGE)
 
     add_code(s, [
@@ -222,7 +222,7 @@ def slide_03(prs):
         "}",
     ], 6.55, 0.95, 6.5, 4.1, size=11)
 
-    add_text(s, "BarShape draws a bottom-anchored filled rectangle — the fraction scales the height:",
+    add_text(s, "BarShape draw rectangle ដែល anchor ខាងក្រោម — fraction scale height:",
              0.4, 3.4, 6.0, 0.5, size=12, color=GREY, italic=True)
 
     # Mini visual bar chart demo
@@ -255,7 +255,7 @@ def slide_03(prs):
 def slide_04(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📊  BarChartView — Full Implementation",
+    add_text(s, "📊  BarChartView — Implementation ពេញលេញ",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=ORANGE)
 
     add_code(s, [
@@ -295,18 +295,18 @@ def slide_04(prs):
     ], 0.3, 0.95, 7.6, 6.1, size=9.5)
 
     # Right — design notes
-    add_text(s, "Design Decisions", 8.1, 1.0, 5.0, 0.35,
+    add_text(s, "ការសម្រេចចិត្ត Design", 8.1, 1.0, 5.0, 0.35,
              size=15, bold=True, color=WHITE)
 
     notes = [
         (GREEN,   "maxValue computed",
-                  "Bars scale relative to the largest value — chart always fills the available height"),
+                  "Bars scale ទៅតាមតម្លៃធំបំផុត — chart បំពេញ height ជានិច្ច"),
         (BLUE,    "GeometryReader",
-                  "Width adapts to any screen size — no hardcoded pixel values"),
-        (ORANGE,  "Paired bars",
-                  "Income (green) + Expense (red) side by side for instant P&L comparison"),
-        (TEAL,    "MonthLabel below",
-                  "ខ្មែរ month abbreviations keep the UI compact on small screens"),
+                  "Width ស្ដាប់ screen size ណាមួយ — គ្មាន pixel values hardcoded"),
+        (ORANGE,  "Bars គូ",
+                  "ចំណូល (បៃតង) + ចំណាយ (ក្រហម) side by side សម្រាប់ P&L ភ្លាមៗ"),
+        (TEAL,    "MonthLabel ខាងក្រោម",
+                  "ពាក្យខ្លី month ខ្មែរ ធ្វើ UI compact"),
     ]
 
     for i, (color, title, desc) in enumerate(notes):
@@ -328,7 +328,7 @@ def slide_04(prs):
 def slide_05(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📄  CSV Export — Shareable Spreadsheet Data",
+    add_text(s, "📄  CSV Export — ទិន្នន័យ Spreadsheet ចែករំលែកបាន",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=BLUE)
 
     add_code(s, [
@@ -366,7 +366,7 @@ def slide_05(prs):
     ], 0.3, 0.95, 7.1, 6.1, size=9.5)
 
     # Right column
-    add_text(s, "CSV Usage", 7.6, 1.0, 5.5, 0.35, size=15, bold=True, color=WHITE)
+    add_text(s, "ការប្រើ CSV", 7.6, 1.0, 5.5, 0.35, size=15, bold=True, color=WHITE)
     add_code(s, [
         "let csv = CSVExporter",
         "    .makeTransactionCSV(transactions)",
@@ -376,13 +376,13 @@ def slide_05(prs):
         "// → pass url to UIActivityViewController",
     ], 7.6, 1.42, 5.5, 1.9, size=11)
 
-    add_text(s, "Key Rules", 7.6, 3.45, 5.5, 0.35, size=15, bold=True, color=WHITE)
+    add_text(s, "ច្បាប់សំខាន់", 7.6, 3.45, 5.5, 0.35, size=15, bold=True, color=WHITE)
     add_bullets(s, [
-        'Escape commas in text fields (",") → replace with ";"',
-        "Use .temporaryDirectory — no permission needed",
-        "atomically: true prevents partial writes on crash",
-        "UTF-8 ensures Khmer text survives the round trip",
-        "Open in Excel/Google Sheets on desktop immediately",
+        'Escape commas (",") → ជំនួស ";"',
+        "ប្រើ .temporaryDirectory — មិនត្រូវការ permission",
+        "atomically: true ការពារ writes មិនពេញ",
+        "UTF-8 ធានា text ខ្មែររស់រានជានិច្ច",
+        "បើកក្នុង Excel/Google Sheets ភ្លាមៗ",
     ], 7.6, 3.88, 5.5, 2.7, size=12, bullet_color=BLUE)
 
     slide_number(s, 5)
@@ -395,22 +395,22 @@ def slide_05(prs):
 def slide_06(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🗒️  PDFKit — Building a PDF Report (iOS 11+)",
+    add_text(s, "🗒️  PDFKit — បង្កើតរបាយការណ៍ PDF (iOS 11+)",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=GREEN)
 
     # Left: approach overview
-    add_text(s, "Two ways to create PDFs on iOS:", 0.4, 1.0, 6.0, 0.38,
+    add_text(s, "វិធី ០២ ក្នុងការបង្កើត PDF លើ iOS:", 0.4, 1.0, 6.0, 0.38,
              size=14, bold=True, color=WHITE)
 
     approaches = [
         (ORANGE, "UIGraphicsPDFRenderer  ✅ Recommended",
-         ["Draw into a CGContext — text, lines, images",
-          "Works on iOS 10+ — no PDFKit import needed",
-          "Best for custom-designed report pages"]),
+         ["Draw ចូល CGContext — text, lines, images",
+          "ដំណើរការ iOS 10+ — មិនត្រូវ import PDFKit",
+          "ល្អបំផុតសម្រាប់ report pages custom"]),
         (BLUE,   "PDFDocument + PDFPage",
-         ["Compose pages from UIView snapshots",
-          "Better for existing SwiftUI views → PDF",
-          "Requires PDFKit (iOS 11+) import"]),
+         ["ផ្សំ pages ពី UIView snapshots",
+          "ល្អជាង SwiftUI views → PDF",
+          "ត្រូវការ PDFKit (iOS 11+) import"]),
     ]
 
     for i, (color, title, points) in enumerate(approaches):
@@ -459,7 +459,7 @@ def slide_06(prs):
 def slide_07(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🖊️  Drawing Text & Tables into a PDF Page",
+    add_text(s, "🖊️  Draw Text & Tables ក្នុង PDF Page",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=TEAL)
 
     add_code(s, [
@@ -496,14 +496,14 @@ def slide_07(prs):
         "}",
     ], 0.3, 0.95, 7.6, 6.1, size=9.5)
 
-    add_text(s, "Output Preview", 8.1, 1.0, 5.0, 0.35,
+    add_text(s, "Preview លទ្ធផល", 8.1, 1.0, 5.0, 0.35,
              size=14, bold=True, color=WHITE)
 
     # Simulated A4 page preview
     page_x, page_y = 8.1, 1.42
     page_w, page_h = 5.0, 5.5
     add_rect(s, page_x, page_y, page_w, page_h, WHITE)
-    add_text(s, "Farm Monthly Report", page_x + 0.25, page_y + 0.18,
+    add_text(s, "របាយការណ៍ប្រចាំខែ ចម្ការ", page_x + 0.25, page_y + 0.18,
              page_w - 0.4, 0.4, size=13, bold=True, color=DARK)
     add_rect(s, page_x + 0.15, page_y + 0.65, page_w - 0.3, 0.02,
              RGBColor(0xCC, 0xCC, 0xCC))
@@ -535,7 +535,7 @@ def slide_07(prs):
 def slide_08(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "📤  UIActivityViewController — Sharing Reports",
+    add_text(s, "📤  UIActivityViewController — ចែករំលែករបាយការណ៍",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=PURPLE)
 
     add_code(s, [
@@ -567,15 +567,15 @@ def slide_08(prs):
         "}",
     ], 0.3, 0.95, 7.1, 6.1, size=10)
 
-    add_text(s, "What Farmers See", 7.6, 1.0, 5.5, 0.35,
+    add_text(s, "អ្វីដែលកសិករឃើញ", 7.6, 1.0, 5.5, 0.35,
              size=15, bold=True, color=WHITE)
     add_bullets(s, [
-        "Share sheet slides up automatically",
-        "AirDrop → send to laptop instantly",
-        "Mail → attach to email for agronomist",
-        "Files app → save to iCloud / local",
-        "WhatsApp / Telegram (if installed)",
-        "Print → AirPrint-enabled printers",
+        "Share sheet លេចចេញស្វ័យប្រវត្តិ",
+        "AirDrop → ផ្ញើទៅ laptop ភ្លាមៗ",
+        "Mail → attach ក្នុង email",
+        "Files app → save ទៅ iCloud / local",
+        "WhatsApp / Telegram (បើ install ហើយ)",
+        "Print → printers AirPrint",
     ], 7.6, 1.45, 5.5, 3.2, size=12.5, bullet_color=PURPLE)
 
     add_text(s, "SwiftUI Bridge (iOS 13+):", 7.6, 4.75, 5.5, 0.35,
@@ -604,7 +604,7 @@ def slide_08(prs):
 def slide_09(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🌾  ReportTabView — End-to-End Farmer Flow",
+    add_text(s, "🌾  ReportTabView — លំហូរ End-to-End កសិករ",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=GOLD)
 
     add_code(s, [
@@ -649,14 +649,14 @@ def slide_09(prs):
     ], 0.3, 0.95, 7.6, 6.1, size=9)
 
     # Right — flow diagram
-    add_text(s, "Flow", 8.1, 1.0, 5.0, 0.35, size=15, bold=True, color=WHITE)
+    add_text(s, "លំហូរ", 8.1, 1.0, 5.0, 0.35, size=15, bold=True, color=WHITE)
     steps = [
-        (ORANGE, "1. Select Month",    "MonthPickerView ‹/› → vm.selectedMonth → SummaryCardView updates"),
-        (BLUE,   "2. View Chart",      "BarChartView shows suffix(6) months; empty state if no transactions"),
-        (GREEN,  "3. Tap CSV / PDF",   "PrimaryButton triggers exportCSV() / exportPDF() — background thread"),
+        (ORANGE, "1. ជ្រើសខែ",        "MonthPickerView ‹/› → vm.selectedMonth → SummaryCardView ធ្វើបច្ចុប្បន្នភាព"),
+        (BLUE,   "2. មើល Chart",       "BarChartView បង្ហាញ ៦ ខែ; empty state បើគ្មាន transactions"),
+        (GREEN,  "3. ចុច CSV / PDF",   "PrimaryButton ដំណើរការ exportCSV() / exportPDF()"),
         (PURPLE, "4. Build & Write",   "CSVExporter/PDFGenerator → PDFGenerator.writeTempFile → URL"),
-        (TEAL,   "5. Share Sheet",     "ShareSheet(items: [url]) wraps UIActivityViewController"),
-        (GOLD,   "6. Farmer Shares",   "AirDrop / WhatsApp / Mail / Files / Print"),
+        (TEAL,   "5. Share Sheet",     "ShareSheet(items: [url]) រំកិល UIActivityViewController"),
+        (GOLD,   "6. កសិករចែករំលែក",  "AirDrop / WhatsApp / Mail / Files / Print"),
     ]
     for i, (color, step, desc) in enumerate(steps):
         sy = 1.45 + i * 0.98
@@ -726,18 +726,18 @@ def slide_10(prs):
         "}",
     ], 0.3, 0.95, 7.6, 6.1, size=9.5)
 
-    add_text(s, "Key Design Choices", 8.1, 1.0, 5.0, 0.35,
+    add_text(s, "ការសម្រេចចិត្ត Design", 8.1, 1.0, 5.0, 0.35,
              size=14, bold=True, color=WHITE)
 
     choices = [
-        (GREEN,  "Month start not Date()",
-                 "dateInterval(of:for:).start avoids off-by-one near midnight / month boundary"),
-        (ORANGE, "$0.isExpense not !$0.isIncome",
-                 "Transaction has both computed properties — explicit is clearer and safer"),
-        (BLUE,   "selectedReport returns zero report",
-                 "Chart & summary never crash on an empty month — $0.00 displays gracefully"),
+        (GREEN,  "Month start ជំនួស Date()",
+                 "dateInterval(of:for:).start ការពារ off-by-one ជិត midnight"),
+        (ORANGE, "$0.isExpense ជំនួស !$0.isIncome",
+                 "Transaction មាន computed properties ពីរ — explicit ច្បាស់ & safe ជាង"),
+        (BLUE,   "selectedReport return zero report",
+                 "Chart & summary មិន crash ខែទទេ — $0.00 បង្ហាញ"),
         (TEAL,   "canGoToNextMonth guard",
-                 "Prevents navigating into the future where no data will ever exist"),
+                 "ការពារ navigate ទៅខែអនាគតដែលគ្មានទិន្នន័យ"),
     ]
     for i, (color, title, desc) in enumerate(choices):
         cy = 1.42 + i * 1.45
@@ -758,10 +758,10 @@ def slide_10(prs):
 def slide_11(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "⚠️  iOS API Rules — Week 10 Quick Reference",
+    add_text(s, "⚠️  ច្បាប់ iOS API — Week 10 Quick Reference",
              0.4, 0.12, 12.5, 0.7, size=24, bold=True, color=GOLD)
 
-    headers = ["Feature", "❌ Wrong (newer API)", "✅ Correct (iOS 13+)"]
+    headers = ["Feature", "❌ ខុស (API ថ្មីជាង)", "✅ ត្រឹមត្រូវ (iOS 13+)"]
     col_x   = [0.35, 4.3, 8.7]
     col_w   = [3.75, 4.2, 4.4]
 
@@ -772,13 +772,13 @@ def slide_11(prs):
 
     rows = [
         ("Bar Charts",
-         "Swift Charts (iOS 16+)",
+         "Swift Charts (iOS 16+ — ខុស)",
          "GeometryReader + BarShape: Shape (iOS 13+)"),
         ("Date grouping",
-         "dateComponents(_:from:to:) careless",
+         "dateComponents careless",
          "Calendar.dateInterval(of: .month, for:)"),
         ("File sharing",
-         "ShareLink (iOS 16+)",
+         "ShareLink (iOS 16+ — ខុស)",
          "UIActivityViewController wrapped in UIViewControllerRepresentable"),
         ("Photo in PDF",
          "UIGraphicsImageRenderer (fine, but check bounds)",
@@ -812,42 +812,42 @@ def slide_11(prs):
 def slide_12(prs):
     s = add_slide(prs)
     add_rect(s, 0, 0, W, 0.9, DARK2)
-    add_text(s, "🎯  Summary & What's Next",
+    add_text(s, "🎯  សង្ខេប & ជំហានបន្ទាប់",
              0.4, 0.12, 12.5, 0.7, size=26, bold=True, color=GREEN)
 
-    add_text(s, "Week 10 Deliverables", 0.4, 1.0, 6.2, 0.38,
+    add_text(s, "លទ្ធផល Week 10", 0.4, 1.0, 6.2, 0.38,
              size=16, bold=True, color=WHITE)
     deliverables = [
-        "Reports/Models/MonthlyReport.swift — data model",
-        "Reports/ViewModels/ReportViewModel.swift — grouping + P&L",
-        "Reports/Services/CSVExporter.swift — CSV generation + temp file",
-        "Reports/Services/PDFGenerator.swift — UIGraphicsPDFRenderer report",
+        "Reports/Models/MonthlyReport.swift — ម៉ូដែលទិន្នន័យ",
+        "Reports/ViewModels/ReportViewModel.swift — ដាក់ក្រុម + P&L",
+        "Reports/Services/CSVExporter.swift — generate CSV + temp file",
+        "Reports/Services/PDFGenerator.swift — របាយការណ៍ UIGraphicsPDFRenderer",
         "Reports/Views/BarChartView.swift — GeometryReader + BarShape",
-        "Reports/Views/ReportTabView.swift — combined UI + share flow",
+        "Reports/Views/ReportTabView.swift — UI + share flow រួមគ្នា",
         "Shared/ShareSheet.swift — UIViewControllerRepresentable wrapper",
     ]
     add_bullets(s, deliverables, 0.4, 1.45, 6.3, 4.2,
                 size=12, bullet_color=GREEN)
 
-    add_text(s, "Coming Up — Week 11 / 12", 7.0, 1.0, 5.9, 0.38,
+    add_text(s, "ខាងមុខ — Week 11 / 12", 7.0, 1.0, 5.9, 0.38,
              size=16, bold=True, color=WHITE)
     next_items = [
-        "CloudKit sync — share farm data across devices",
-        "WidgetKit — farm summary on the Home Screen",
-        "App Store submission checklist",
-        "TestFlight internal distribution",
-        "Performance profiling with Instruments",
+        "CloudKit sync — ចែករំលែកទិន្នន័យចម្ការ",
+        "WidgetKit — សង្ខេបចម្ការ Home Screen",
+        "Checklist ដាក់ App Store",
+        "TestFlight distribution ខាងក្នុង",
+        "Performance profiling ជាមួយ Instruments",
     ]
     add_bullets(s, next_items, 7.0, 1.45, 5.9, 3.5,
                 size=12.5, bullet_color=BLUE)
 
     add_rect(s, 0.3, 5.85, 12.75, 1.25, ORANGE)
-    add_text(s, "💡  Key Takeaway",
+    add_text(s, "💡  ចំណាំសំខាន់",
              0.55, 5.9, 12.3, 0.38, size=14, bold=True, color=DARK)
     add_text(s,
-             "A farmer who can export their own P&L report and share it in WhatsApp "
-             "trusts the app. CSV + PDF + UIActivityViewController — three tools, "
-             "one tap, maximum farmer value.",
+             "កសិករ​ដែល​អាច​នាំចេញ​​ P&L របស់​ខ្លួន ហើយ​ចែករំលែក​តាម WhatsApp "
+             "ជឿ​ទុក​ចិត្ត​កម្មវិធី​នេះ។ CSV + PDF + UIActivityViewController — "
+             "ឧបករណ៍​ 3 tap​​តែ​មួយ​ ​តម្លៃ​ខ្ពស់​បំផុត",
              0.55, 6.28, 12.3, 0.65, size=12.5, color=DARK)
 
     slide_number(s, 12)
