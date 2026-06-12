@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced iOS Quiz — Week 1–12</title>
+    <title>Advanced iOS Quiz — Week 1–12 + Git</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -229,9 +229,9 @@
         <!-- ═══════════ START SCREEN ═══════════ -->
         <div id="startScreen" class="start-screen">
             <h1>Advanced iOS Quiz</h1>
-            <p>12 advanced questions covering MVVM, CoreData, Navigation,<br>
-               Notifications, Animations, PDF Export, TestFlight, and more.<br>
-               <strong>Weeks 1–12 · SmartFarmer Assistant</strong></p>
+            <p>14 advanced questions covering MVVM, CoreData, Navigation,<br>
+               Notifications, Animations, PDF Export, TestFlight, Git, and more.<br>
+               <strong>Weeks 1–12 + Git · SmartFarmer Assistant</strong></p>
 
             <div class="stats">
                 <div class="stat-box">
@@ -256,6 +256,7 @@
                 <span class="week-pill">W9 · Animations</span>
                 <span class="week-pill">W10 · Export</span>
                 <span class="week-pill">W12 · TestFlight</span>
+                <span class="week-pill">Git · Branch & Remote</span>
             </div>
 
             <button onclick="startQuiz()" style="padding:16px 48px; font-size:1.1rem;">
@@ -274,11 +275,15 @@
                 <div class="legend-item"><span class="legend-week">W9</span>Animations — ViewModifier, .animation(), dark mode</div>
                 <div class="legend-item"><span class="legend-week">W10</span>Export — GeometryReader chart, UIGraphicsPDFRenderer</div>
                 <div class="legend-item"><span class="legend-week">W12</span>Final Polish — App icon, LaunchScreen, TestFlight archive & upload</div>
+                <div class="legend-item"><span class="legend-week">Git</span>3 areas (Working Dir → Staging → Repo), branch & switch, push/pull</div>
                 <div class="legend-item" style="margin-top:8px; color:var(--correct); font-weight:600;">
                     ✎ Code Completion — Q9 (CoreData CRUD) · Q10 (UIViewControllerRepresentable)
                 </div>
                 <div class="legend-item" style="color:var(--correct); font-weight:600;">
                     Q11–12 · Week 12: TestFlight archive target · LaunchScreen rule
+                </div>
+                <div class="legend-item" style="color:var(--correct); font-weight:600;">
+                    Q13–14 · Git: Three-area workflow · branch create & switch
                 </div>
             </div>
         </div>
@@ -554,6 +559,36 @@
             ],
             correct: 1,
             explain: "The launch screen is displayed by the operating system before your app's process is even launched. There is no Swift runtime, no UIKit event loop, and no ViewController lifecycle — only the static snapshot from LaunchScreen.storyboard is shown. Adding Swift code or @IBOutlet connections causes a crash or a slow launch, and Apple's review guidelines require the launch screen to be static."
+        },
+
+        // ── Q13 · WeekGit — Three Areas ──────────────────────────────────
+        {
+            week: "Git · Three Areas",
+            isCode: false,
+            q: "What is the correct order of Git's three storage areas when you save a code change permanently?",
+            options: [
+                "Repository → Staging Area → Working Directory",
+                "Working Directory → Repository → Staging Area",
+                "Staging Area → Working Directory → Repository",
+                "Working Directory → Staging Area → Repository"
+            ],
+            correct: 3,
+            explain: "Working Directory is where you edit files. 'git add' moves changes to the Staging Area (index) — a preview of your next commit. 'git commit' then saves that snapshot permanently into the Repository (.git folder). Every commit is a snapshot of exactly what was in the Staging Area at that moment."
+        },
+
+        // ── Q14 · WeekGit — Branch & Switch ──────────────────────────────
+        {
+            week: "Git · Branching",
+            isCode: false,
+            q: "Which single Git command creates a new branch called 'feature/login' AND immediately switches to it?",
+            options: [
+                "git branch feature/login",
+                "git merge feature/login",
+                "git switch -c feature/login",
+                "git push -u origin feature/login"
+            ],
+            correct: 2,
+            explain: "'git switch -c <name>' is the modern Git command (2.23+) that creates (-c = create) and switches to the new branch in one step. 'git branch feature/login' only creates the branch but stays on the current one. The older equivalent is 'git checkout -b feature/login'. 'git push -u' uploads an existing branch to a remote — it does not create a local branch."
         }
     ];
 
