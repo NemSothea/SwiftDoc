@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced iOS Quiz — Week 1–10</title>
+    <title>Advanced iOS Quiz — Week 1–12</title>
     <style>
         :root {
             --primary: #007AFF;
@@ -229,9 +229,9 @@
         <!-- ═══════════ START SCREEN ═══════════ -->
         <div id="startScreen" class="start-screen">
             <h1>Advanced iOS Quiz</h1>
-            <p>10 advanced questions covering MVVM, CoreData, Navigation,<br>
-               Notifications, Animations, PDF Export, and more.<br>
-               <strong>Weeks 1–10 · SmartFarmer Assistant</strong></p>
+            <p>12 advanced questions covering MVVM, CoreData, Navigation,<br>
+               Notifications, Animations, PDF Export, TestFlight, and more.<br>
+               <strong>Weeks 1–12 · SmartFarmer Assistant</strong></p>
 
             <div class="stats">
                 <div class="stat-box">
@@ -255,6 +255,7 @@
                 <span class="week-pill">W8 · Dashboard</span>
                 <span class="week-pill">W9 · Animations</span>
                 <span class="week-pill">W10 · Export</span>
+                <span class="week-pill">W12 · TestFlight</span>
             </div>
 
             <button onclick="startQuiz()" style="padding:16px 48px; font-size:1.1rem;">
@@ -272,8 +273,12 @@
                 <div class="legend-item"><span class="legend-week">W8</span>Dashboard — @ViewBuilder, multiple @FetchRequest</div>
                 <div class="legend-item"><span class="legend-week">W9</span>Animations — ViewModifier, .animation(), dark mode</div>
                 <div class="legend-item"><span class="legend-week">W10</span>Export — GeometryReader chart, UIGraphicsPDFRenderer</div>
+                <div class="legend-item"><span class="legend-week">W12</span>Final Polish — App icon, LaunchScreen, TestFlight archive & upload</div>
                 <div class="legend-item" style="margin-top:8px; color:var(--correct); font-weight:600;">
                     ✎ Code Completion — Q9 (CoreData CRUD) · Q10 (UIViewControllerRepresentable)
+                </div>
+                <div class="legend-item" style="color:var(--correct); font-weight:600;">
+                    Q11–12 · Week 12: TestFlight archive target · LaunchScreen rule
                 </div>
             </div>
         </div>
@@ -519,6 +524,36 @@
             ],
             correct: 1,
             explain: "In UIViewControllerRepresentable, context.coordinator is the Coordinator object returned by makeCoordinator(). It is the bridge that conforms to UIImagePickerControllerDelegate and UINavigationControllerDelegate. You cannot use 'self' here because ImagePicker is a struct — structs cannot be Objective-C delegates (which require a reference type / class)."
+        },
+
+        // ── Q11 · Week 12 — TestFlight Archive Target ────────────────────
+        {
+            week: "Week 12 · TestFlight",
+            isCode: false,
+            q: "Before running Product → Archive in Xcode to upload a build to TestFlight, what must you select in the device/scheme destination picker?",
+            options: [
+                "iPhone 15 Pro (Simulator)",
+                "My Mac (Designed for iPad)",
+                "Any iOS Device (arm64)",
+                "Generic iOS Device (x86_64)"
+            ],
+            correct: 2,
+            explain: "You must select 'Any iOS Device (arm64)' — a real-device destination — before archiving. If a simulator is selected, Xcode produces a debug x86_64 binary that App Store Connect rejects. The arm64 slice is required for all modern iPhones and is the only architecture accepted for distribution."
+        },
+
+        // ── Q12 · Week 12 — LaunchScreen Rule ────────────────────────────
+        {
+            week: "Week 12 · Final Polish",
+            isCode: false,
+            q: "Why must LaunchScreen.storyboard contain only static images and layout — no Swift code, no animations, and no @IBOutlet connections?",
+            options: [
+                "Xcode strips all code from storyboard files during the archive step",
+                "The OS renders the launch screen before the app process starts — no Swift runtime is available yet",
+                "Animations in storyboards require iOS 16+ and break backward compatibility",
+                "App Store review tools flag any storyboard that references Swift classes"
+            ],
+            correct: 1,
+            explain: "The launch screen is displayed by the operating system before your app's process is even launched. There is no Swift runtime, no UIKit event loop, and no ViewController lifecycle — only the static snapshot from LaunchScreen.storyboard is shown. Adding Swift code or @IBOutlet connections causes a crash or a slow launch, and Apple's review guidelines require the launch screen to be static."
         }
     ];
 
