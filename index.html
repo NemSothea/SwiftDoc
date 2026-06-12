@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced iOS Quiz — Week 1–10</title>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --correct: #34C759;
+            --wrong: #FF3B30;
+            --bg: #F2F2F7;
+            --card: #FFFFFF;
+            --text: #000000;
+            --border: #C7C7CC;
+            --code-bg: #1C1C1E;
+            --code-text: #E8E8E8;
+            --code-highlight: #FFD60A;
+            --badge-bg: rgba(0,122,255,0.12);
+        }
+
+        [data-theme="dark"] {
+            --primary: #0A84FF;
+            --correct: #30D158;
+            --wrong: #FF453A;
+            --bg: #000000;
+            --card: #1C1C1E;
+            --text: #FFFFFF;
+            --border: #38383A;
+            --code-bg: #0D1117;
+            --badge-bg: rgba(10,132,255,0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container { max-width: 640px; margin: 0 auto; }
+
+        /* ── Theme button ── */
+        .theme-btn {
+            position: fixed; top: 20px; right: 20px;
+            background: var(--card); border: 2px solid var(--border);
+            border-radius: 50%; width: 50px; height: 50px;
+            cursor: pointer; font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: 0.2s;
+        }
+        .theme-btn:hover { transform: scale(1.1); }
+
+        /* ── Start screen ── */
+        .start-screen { text-align: center; padding: 40px 20px; }
+        .start-screen h1 { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }
+        .start-screen p { color: #8E8E93; margin-bottom: 30px; line-height: 1.6; }
+
+        .stats {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 12px; margin-bottom: 30px;
+        }
+        .stat-box {
+            background: var(--card); padding: 18px;
+            border-radius: 14px; text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-label { font-size: 0.8rem; color: #8E8E93; margin-bottom: 4px; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+
+        .week-pills {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            justify-content: center; margin-bottom: 28px;
+        }
+        .week-pill {
+            background: var(--badge-bg); color: var(--primary);
+            border-radius: 20px; padding: 4px 12px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+
+        /* ── Quiz screen ── */
+        .quiz-box {
+            background: var(--card); padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .quiz-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 18px;
+        }
+        .question-count { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+        .week-badge {
+            background: var(--badge-bg); color: var(--primary);
+            border-radius: 20px; padding: 3px 12px;
+            font-size: 0.78rem; font-weight: 600;
+        }
+        .code-badge {
+            background: rgba(52,199,89,0.12); color: var(--correct);
+            border-radius: 20px; padding: 3px 12px;
+            font-size: 0.78rem; font-weight: 600;
+        }
+
+        /* ── Progress bar ── */
+        .progress-bar-wrap {
+            background: var(--border); border-radius: 4px;
+            height: 5px; margin-bottom: 22px; overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%; background: var(--primary);
+            border-radius: 4px; transition: width 0.4s ease;
+        }
+
+        .question { font-size: 1.15rem; margin-bottom: 20px; line-height: 1.6; font-weight: 500; }
+
+        /* ── Code block inside question ── */
+        .code-block {
+            background: var(--code-bg); color: var(--code-text);
+            border-radius: 10px; padding: 16px;
+            font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 0.82rem; line-height: 1.65;
+            margin-bottom: 20px; overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .code-block .blank {
+            background: var(--code-highlight); color: #000;
+            padding: 1px 6px; border-radius: 4px;
+            font-weight: 700; font-size: 0.88rem;
+        }
+        .code-block .kw  { color: #FF79C6; }
+        .code-block .fn  { color: #50FA7B; }
+        .code-block .str { color: #F1FA8C; }
+        .code-block .cm  { color: #6272A4; font-style: italic; }
+        .code-block .ty  { color: #8BE9FD; }
+        .code-block .num { color: #BD93F9; }
+
+        /* ── Options ── */
+        .options { display: flex; flex-direction: column; gap: 11px; }
+
+        .option {
+            padding: 14px 16px; border: 2px solid var(--border);
+            border-radius: 11px; cursor: pointer;
+            transition: border-color 0.18s, background 0.18s;
+            font-size: 0.95rem; line-height: 1.4;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .option .opt-letter {
+            min-width: 24px; height: 24px; border-radius: 6px;
+            background: var(--badge-bg); color: var(--primary);
+            font-weight: 700; font-size: 0.8rem;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 1px;
+        }
+        .option:hover { border-color: var(--primary); background: var(--badge-bg); }
+        .option.selected { border-color: var(--primary); background: var(--badge-bg); }
+        .option.correct { border-color: var(--correct); background: rgba(52,199,89,0.1); }
+        .option.correct .opt-letter { background: var(--correct); color: #fff; }
+        .option.wrong { border-color: var(--wrong); background: rgba(255,59,48,0.08); }
+        .option.wrong .opt-letter { background: var(--wrong); color: #fff; }
+
+        /* ── Code option ── */
+        .option code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem; background: rgba(0,0,0,0.07);
+            padding: 2px 6px; border-radius: 4px;
+        }
+        [data-theme="dark"] .option code { background: rgba(255,255,255,0.07); }
+
+        /* ── Explanation ── */
+        .explanation {
+            background: rgba(0,122,255,0.08); border-left: 3px solid var(--primary);
+            padding: 14px 16px; border-radius: 0 10px 10px 0;
+            margin-top: 18px; display: none; font-size: 0.9rem; line-height: 1.55;
+        }
+        .explanation strong { color: var(--primary); }
+
+        /* ── Buttons ── */
+        .buttons { display: flex; justify-content: space-between; margin-top: 22px; gap: 10px; }
+        button {
+            padding: 12px 24px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+        }
+        button:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); }
+        button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: transparent; color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        /* ── Result screen ── */
+        .result-screen { text-align: center; padding: 40px 20px; }
+        .result-icon { font-size: 4rem; margin: 16px 0; }
+        .score { font-size: 3.5rem; font-weight: 800; color: var(--primary); margin: 12px 0; }
+        .result-message { font-size: 1.1rem; margin-bottom: 28px; line-height: 1.6; color: #8E8E93; }
+        .result-actions { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .result-actions button { min-width: 220px; }
+
+        /* ── Week legend ── */
+        .week-legend {
+            background: var(--card); border-radius: 14px;
+            padding: 20px; margin-top: 24px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .week-legend h3 { font-size: 0.9rem; color: #8E8E93; margin-bottom: 12px; }
+        .legend-item { font-size: 0.82rem; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+        .legend-week { color: var(--primary); font-weight: 700; margin-right: 4px; }
+
+        /* ── Screens ── */
+        #quizScreen, #resultScreen { display: none; }
+
+        @media (max-width: 540px) {
+            .stats { grid-template-columns: 1fr; }
+            .quiz-box { padding: 20px 16px; }
+            .buttons { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-btn" id="themeBtn">🌙</button>
+
+    <div class="container">
+
+        <!-- ═══════════ START SCREEN ═══════════ -->
+        <div id="startScreen" class="start-screen">
+            <h1>Advanced iOS Quiz</h1>
+            <p>10 advanced questions covering MVVM, CoreData, Navigation,<br>
+               Notifications, Animations, PDF Export, and more.<br>
+               <strong>Weeks 1–10 · SmartFarmer Assistant</strong></p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Mastery</div>
+                    <div class="stat-value" id="masteryStart">0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="streakStart">0</div>
+                </div>
+            </div>
+
+            <div class="week-pills">
+                <span class="week-pill">W1 · MVVM</span>
+                <span class="week-pill">W2 · CoreData</span>
+                <span class="week-pill">W3 · Navigation</span>
+                <span class="week-pill">W4 · Finance</span>
+                <span class="week-pill">W5 · Notifications</span>
+                <span class="week-pill">W6 · Search</span>
+                <span class="week-pill">W7 · Photos</span>
+                <span class="week-pill">W8 · Dashboard</span>
+                <span class="week-pill">W9 · Animations</span>
+                <span class="week-pill">W10 · Export</span>
+            </div>
+
+            <button onclick="startQuiz()" style="padding:16px 48px; font-size:1.1rem;">
+                Start Quiz
+            </button>
+
+            <div class="week-legend">
+                <h3>Topics Covered</h3>
+                <div class="legend-item"><span class="legend-week">W1</span>MVVM — @StateObject vs @ObservedObject, ObservableObject</div>
+                <div class="legend-item"><span class="legend-week">W2</span>CoreData — NSPredicate, @FetchRequest, CRUD, saveContext()</div>
+                <div class="legend-item"><span class="legend-week">W3</span>Navigation — NavigationLink, programmatic push (iOS 13+)</div>
+                <div class="legend-item"><span class="legend-week">W5</span>Notifications — UNUserNotificationCenter, scheduling</div>
+                <div class="legend-item"><span class="legend-week">W6</span>Offline — JSON preload, custom search bar</div>
+                <div class="legend-item"><span class="legend-week">W7</span>Photos — UIViewControllerRepresentable bridge</div>
+                <div class="legend-item"><span class="legend-week">W8</span>Dashboard — @ViewBuilder, multiple @FetchRequest</div>
+                <div class="legend-item"><span class="legend-week">W9</span>Animations — ViewModifier, .animation(), dark mode</div>
+                <div class="legend-item"><span class="legend-week">W10</span>Export — GeometryReader chart, UIGraphicsPDFRenderer</div>
+                <div class="legend-item" style="margin-top:8px; color:var(--correct); font-weight:600;">
+                    ✎ Code Completion — Q9 (CoreData CRUD) · Q10 (UIViewControllerRepresentable)
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ QUIZ SCREEN ═══════════ -->
+        <div id="quizScreen">
+            <div class="quiz-box">
+                <div class="quiz-header">
+                    <span class="question-count" id="questionCount">Question 1/10</span>
+                    <span id="weekBadge" class="week-badge">Week 1</span>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" id="progressBar" style="width:10%"></div>
+                </div>
+                <div class="question" id="questionText"></div>
+                <div id="codeBlock" class="code-block" style="display:none"></div>
+                <div class="options" id="options"></div>
+                <div class="explanation" id="explanation">
+                    <strong>Explanation:</strong>
+                    <span id="explanationText"></span>
+                </div>
+                <div class="buttons">
+                    <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Back</button>
+                    <button id="nextBtn" onclick="nextQuestion()" disabled>Check Answer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ RESULT SCREEN ═══════════ -->
+        <div id="resultScreen" class="result-screen">
+            <div class="result-icon" id="resultIcon">🎯</div>
+            <div class="score" id="finalScore">0%</div>
+            <div class="result-message" id="resultMessage"></div>
+            <div class="result-actions">
+                <button onclick="restartQuiz()">Restart Quiz</button>
+                <button class="btn-secondary" onclick="backToStart()">Back to Start</button>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <script>
+    // ─────────────────────────────────────────
+    // Simple Spaced Repetition (SRS)
+    // ─────────────────────────────────────────
+    class SimpleSRS {
+        constructor() {
+            const saved = localStorage.getItem('advancedQuizSRS');
+            this.data = saved ? JSON.parse(saved) : { cards: {}, streak: 0, lastDate: null };
+        }
+        review(id, correct) {
+            if (!this.data.cards[id]) this.data.cards[id] = { correct: 0, wrong: 0 };
+            correct ? this.data.cards[id].correct++ : this.data.cards[id].wrong++;
+            const today = new Date().toDateString();
+            if (this.data.lastDate !== today) {
+                this.data.streak = correct ? (this.data.streak || 0) + 1 : 0;
+                this.data.lastDate = today;
+            }
+            localStorage.setItem('advancedQuizSRS', JSON.stringify(this.data));
+        }
+        getMastery() {
+            const cards = Object.values(this.data.cards);
+            if (!cards.length) return 0;
+            const total = cards.reduce((s, c) => s + c.correct + c.wrong, 0);
+            const correct = cards.reduce((s, c) => s + c.correct, 0);
+            return total ? Math.round((correct / total) * 100) : 0;
+        }
+    }
+
+    // ─────────────────────────────────────────
+    // Question Bank — 10 Advanced Questions
+    // ─────────────────────────────────────────
+    const questions = [
+        // ── Q1 · Week 01 — MVVM ──────────────────────────────────────────
+        {
+            week: "Week 1 · MVVM",
+            isCode: false,
+            q: "In MVVM (iOS 13+), which property wrapper should a view use when it CREATES and OWNS the ViewModel for its entire lifetime?",
+            options: [
+                "@ObservedObject var vm: FarmViewModel",
+                "@StateObject private var vm: FarmViewModel",
+                "@EnvironmentObject var vm: FarmViewModel",
+                "@State private var vm = FarmViewModel()"
+            ],
+            correct: 1,
+            explain: "@StateObject means THIS view owns the ViewModel — SwiftUI keeps it alive as long as the view is in the tree. @ObservedObject does NOT own it and can be re-created unexpectedly. @EnvironmentObject reads a ViewModel injected by a parent, not one it creates."
+        },
+        // ── Q2 · Week 02 — CoreData NSPredicate ──────────────────────────
+        {
+            week: "Week 2 · CoreData",
+            isCode: false,
+            q: "Why should you use NSPredicate on a @FetchRequest instead of Swift .filter{} to show only expense transactions?",
+            options: [
+                "NSPredicate is faster to write and has cleaner syntax",
+                "NSPredicate filters inside SQLite, loading only matching rows into memory",
+                "Swift .filter{} cannot compare String properties",
+                ".filter{} requires a different managedObjectContext"
+            ],
+            correct: 1,
+            explain: "NSPredicate pushes the filter to SQLite — only matching rows are loaded into memory. Swift .filter{} first loads EVERY row into memory and then discards non-matching ones. On large datasets this is a serious performance problem."
+        },
+        // ── Q3 · Week 02 — @NSManaged ────────────────────────────────────
+        {
+            week: "Week 2 · CoreData",
+            isCode: false,
+            q: "What does the @NSManaged attribute tell the Swift compiler when applied to a CoreData property?",
+            options: [
+                "The property is immutable and cannot be changed after creation",
+                "The property's storage is handled by CoreData's Objective-C runtime, not Swift",
+                "The property will be automatically saved every second",
+                "The property is excluded from the .xcdatamodeld schema"
+            ],
+            correct: 1,
+            explain: "@NSManaged tells Swift: 'don't generate storage for this — CoreData's Objective-C runtime owns it.' This is why you never see a body like var amount = 0.0 — CoreData manages the backing store through the managed object context."
+        },
+        // ── Q4 · Week 03 — Programmatic Navigation ───────────────────────
+        {
+            week: "Week 3 · Navigation",
+            isCode: false,
+            q: "In iOS 13+, what is the correct way to navigate programmatically to a detail view from code (not just from a tap)?",
+            options: [
+                "NavigationStack { }.navigationDestination(for: UUID.self)",
+                "NavigationLink(tag: id, selection: $selectedID) { DetailView() } label: { EmptyView() }",
+                "NavigationLink(destination: DetailView()) { Text('Go') }",
+                "@Environment(\\.dismiss) var dismiss"
+            ],
+            correct: 1,
+            explain: "NavigationLink(tag:selection:) with an invisible label is the iOS 13+ pattern for programmatic navigation. Setting selectedID = someUUID triggers the matching NavigationLink and pushes the view. NavigationStack and .navigationDestination are iOS 16+ only."
+        },
+        // ── Q5 · Week 05 — Local Notifications ───────────────────────────
+        {
+            week: "Week 5 · Notifications",
+            isCode: false,
+            q: "Which class and method do you call first before scheduling a local notification in iOS 13+?",
+            options: [
+                "NotificationCenter.default.post(name:object:)",
+                "UNUserNotificationCenter.current().requestAuthorization(options:completionHandler:)",
+                "UNNotificationRequest.schedule(after:repeats:)",
+                "UserDefaults.standard.set(true, forKey: 'notificationsAllowed')"
+            ],
+            correct: 1,
+            explain: "You must call UNUserNotificationCenter.current().requestAuthorization(...) first to ask the user for permission. Without this, no notifications are delivered. NotificationCenter is for in-process events — it has nothing to do with system notifications."
+        },
+        // ── Q6 · Week 08 — @ViewBuilder ──────────────────────────────────
+        {
+            week: "Week 8 · Dashboard",
+            isCode: false,
+            q: "What does @ViewBuilder enable in a generic container like DashboardSection<Content: View>?",
+            options: [
+                "It allows the struct to inherit from UIView",
+                "It lets the caller pass a closure that returns multiple SwiftUI views without wrapping them in a Group",
+                "It enables live-preview rendering in Xcode Canvas",
+                "It replaces the need for @EnvironmentObject in child views"
+            ],
+            correct: 1,
+            explain: "@ViewBuilder allows a closure parameter to contain multiple View declarations — like a VStack body. Without it you'd need an explicit Group { ... }. This is what makes struct DashboardSection<Content: View> { init(@ViewBuilder content: () -> Content) } work so naturally."
+        },
+        // ── Q7 · Week 09 — ViewModifier ──────────────────────────────────
+        {
+            week: "Week 9 · Animations",
+            isCode: false,
+            q: "What is the primary advantage of extracting repeated .padding().background().cornerRadius() into a custom ViewModifier?",
+            options: [
+                "ViewModifiers run on a background thread and improve performance",
+                "Styling logic is centralised — changing the modifier instantly updates every view that applies it",
+                "ViewModifiers bypass the SwiftUI layout system for faster rendering",
+                "ViewModifiers allow you to call UIKit methods directly"
+            ],
+            correct: 1,
+            explain: "A ViewModifier centralises repeated styling in one place. If you later change the card corner radius from 12 to 16, you change it once in the modifier and all FarmCard views update. Scattering .padding().background().cornerRadius() across every file makes styling brittle and inconsistent."
+        },
+        // ── Q8 · Week 10 — PDF Export ────────────────────────────────────
+        {
+            week: "Week 10 · Export",
+            isCode: false,
+            q: "In iOS 13+, which API is used to generate a formatted PDF report with text and tables?",
+            options: [
+                "ImageRenderer — capture a SwiftUI view as a PDF",
+                "UIGraphicsPDFRenderer — draw text, tables, and graphics into a PDF context",
+                "PDFDocument from PDFKit with appendPage()",
+                "ShareLink with a URL to a pre-built template"
+            ],
+            correct: 1,
+            explain: "UIGraphicsPDFRenderer is available from iOS 10+ and renders arbitrary text and graphics to PDF via a drawing context. ImageRenderer is iOS 16+ only. PDFDocument is for reading existing PDFs, not creating new ones from data. ShareLink is also iOS 16+."
+        },
+
+        // ══════════════════════════════════════════════════════════════════
+        // COMPLETE THE CODE — Q9
+        // ══════════════════════════════════════════════════════════════════
+        {
+            week: "Week 2 · CoreData",
+            isCode: true,
+            q: "Complete the addTransaction() method. What belongs on the blank line to make the new record persist across app restarts?",
+            code: `<span class="kw">func</span> <span class="fn">addTransaction</span>(
+    amount: <span class="ty">Double</span>, note: <span class="ty">String</span>,
+    type: <span class="ty">String</span>, category: <span class="ty">String</span>
+) {
+    <span class="kw">let</span> t = <span class="ty">Transaction</span>(context: context)
+    t.amount   = amount
+    t.note     = note
+    t.type     = type
+    t.category = category
+    t.id       = <span class="ty">UUID</span>()
+    <span class="blank">_______________</span>  <span class="cm">// ← what goes here?</span>
+}`,
+            options: [
+                "context.insert(t)",
+                "context.refresh(t, mergeChanges: true)",
+                "saveContext()",
+                "context.fetch(Transaction.fetchRequest())"
+            ],
+            correct: 2,
+            explain: "saveContext() calls context.save() which flushes all pending changes from the in-memory context to the SQLite store on disk. Without this call the Transaction object is created in memory but disappears the next time the app is launched. context.insert() is not needed because Transaction(context:) already registers the object."
+        },
+
+        // ══════════════════════════════════════════════════════════════════
+        // COMPLETE THE CODE — Q10
+        // ══════════════════════════════════════════════════════════════════
+        {
+            week: "Week 7 · Photos",
+            isCode: true,
+            q: "Complete the UIViewControllerRepresentable bridge for the photo picker. What should picker.delegate be set to?",
+            code: `<span class="kw">struct</span> <span class="ty">ImagePicker</span>: <span class="ty">UIViewControllerRepresentable</span> {
+    <span class="kw">@Binding var</span> image: <span class="ty">UIImage</span>?
+
+    <span class="kw">func</span> <span class="fn">makeCoordinator</span>() -> <span class="ty">Coordinator</span> {
+        <span class="ty">Coordinator</span>(<span class="kw">self</span>)
+    }
+
+    <span class="kw">func</span> <span class="fn">makeUIViewController</span>(
+        context: <span class="ty">Context</span>
+    ) -> <span class="ty">UIImagePickerController</span> {
+        <span class="kw">let</span> picker = <span class="ty">UIImagePickerController</span>()
+        picker.delegate = <span class="blank">_______________</span>
+        <span class="kw">return</span> picker
+    }
+}`,
+            options: [
+                "self",
+                "context.coordinator",
+                "UIImagePickerController()",
+                "Coordinator(self)"
+            ],
+            correct: 1,
+            explain: "In UIViewControllerRepresentable, context.coordinator is the Coordinator object returned by makeCoordinator(). It is the bridge that conforms to UIImagePickerControllerDelegate and UINavigationControllerDelegate. You cannot use 'self' here because ImagePicker is a struct — structs cannot be Objective-C delegates (which require a reference type / class)."
+        }
+    ];
+
+    // ─────────────────────────────────────────
+    // App State
+    // ─────────────────────────────────────────
+    let currentQ = 0;
+    let selected = null;
+    let answered = false;
+    let score    = 0;
+    let srs      = new SimpleSRS();
+
+    // ─────────────────────────────────────────
+    // Theme
+    // ─────────────────────────────────────────
+    function toggleTheme() {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const next   = isDark ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', next);
+        localStorage.setItem('advancedTheme', next);
+        document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+    }
+    const savedTheme = localStorage.getItem('advancedTheme') || 'light';
+    document.body.setAttribute('data-theme', savedTheme);
+    document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    document.getElementById('themeBtn').onclick = toggleTheme;
+
+    // Bootstrap start-screen SRS stats
+    document.getElementById('masteryStart').textContent = srs.getMastery() + '%';
+    document.getElementById('streakStart').textContent  = srs.data.streak || 0;
+
+    // ─────────────────────────────────────────
+    // Quiz flow
+    // ─────────────────────────────────────────
+    function startQuiz() {
+        document.getElementById('startScreen').style.display  = 'none';
+        document.getElementById('quizScreen').style.display   = 'block';
+        currentQ = 0; score = 0;
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const q = questions[currentQ];
+
+        // Header
+        document.getElementById('questionCount').textContent = `Question ${currentQ + 1} / ${questions.length}`;
+
+        // Week / code badge
+        const badge = document.getElementById('weekBadge');
+        if (q.isCode) {
+            badge.textContent = '✎ Complete the Code';
+            badge.className   = 'code-badge';
+        } else {
+            badge.textContent = q.week;
+            badge.className   = 'week-badge';
+        }
+
+        // Progress bar
+        document.getElementById('progressBar').style.width =
+            ((currentQ + 1) / questions.length * 100) + '%';
+
+        // Question text
+        document.getElementById('questionText').textContent = q.q;
+
+        // Code block
+        const codeEl = document.getElementById('codeBlock');
+        if (q.isCode) {
+            codeEl.innerHTML = q.code;
+            codeEl.style.display = 'block';
+        } else {
+            codeEl.style.display = 'none';
+        }
+
+        // Options
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+        q.options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = `<span class="opt-letter">${letters[idx]}</span><span>${opt}</span>`;
+            div.onclick = () => selectOption(idx, div);
+            optionsDiv.appendChild(div);
+        });
+
+        // Reset
+        document.getElementById('explanation').style.display  = 'none';
+        document.getElementById('nextBtn').disabled           = true;
+        document.getElementById('nextBtn').textContent        = 'Check Answer';
+        document.getElementById('prevBtn').disabled           = currentQ === 0;
+        answered = false;
+        selected = null;
+    }
+
+    function selectOption(index, element) {
+        if (answered) return;
+        document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        element.classList.add('selected');
+        selected = index;
+        document.getElementById('nextBtn').disabled = false;
+    }
+
+    function nextQuestion() {
+        if (!answered) {
+            checkAnswer();
+        } else {
+            if (currentQ < questions.length - 1) {
+                currentQ++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+    }
+
+    function checkAnswer() {
+        if (selected === null) return;
+        answered = true;
+        const q       = questions[currentQ];
+        const correct = selected === q.correct;
+
+        srs.review(`adv_q${currentQ}`, correct);
+        if (correct) score++;
+
+        document.querySelectorAll('.option').forEach((opt, idx) => {
+            if (idx === q.correct) opt.classList.add('correct');
+            else if (idx === selected) opt.classList.add('wrong');
+            opt.style.pointerEvents = 'none';
+        });
+
+        document.getElementById('explanationText').textContent = q.explain;
+        document.getElementById('explanation').style.display   = 'block';
+        document.getElementById('nextBtn').textContent =
+            currentQ < questions.length - 1 ? 'Next Question →' : 'See Results';
+    }
+
+    function prevQuestion() {
+        if (currentQ > 0) { currentQ--; loadQuestion(); }
+    }
+
+    function showResults() {
+        document.getElementById('quizScreen').style.display  = 'none';
+        document.getElementById('resultScreen').style.display = 'block';
+
+        const pct = Math.round((score / questions.length) * 100);
+        document.getElementById('finalScore').textContent = pct + '%';
+
+        let icon, msg;
+        if      (pct >= 90) { icon = '🏆'; msg = 'Outstanding! You mastered all 10 weeks.'; }
+        else if (pct >= 80) { icon = '🎯'; msg = 'Great work! Almost there.'; }
+        else if (pct >= 70) { icon = '💪'; msg = 'Good effort! Review the concepts you missed.'; }
+        else if (pct >= 60) { icon = '📚'; msg = 'Nice try! Go back over the READMEs.'; }
+        else                 { icon = '🔄'; msg = 'Keep practicing — you\'ve got this!'; }
+
+        document.getElementById('resultIcon').textContent = icon;
+        document.getElementById('resultMessage').innerHTML =
+            `${msg}<br><br>You got <strong>${score} / ${questions.length}</strong> correct.`;
+    }
+
+    function restartQuiz() {
+        currentQ = 0; score = 0;
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display   = 'block';
+        loadQuestion();
+    }
+
+    function backToStart() {
+        document.getElementById('masteryStart').textContent = srs.getMastery() + '%';
+        document.getElementById('streakStart').textContent  = srs.data.streak || 0;
+        document.getElementById('resultScreen').style.display = 'none';
+        document.getElementById('startScreen').style.display  = 'block';
+    }
+    </script>
+</body>
+</html>
