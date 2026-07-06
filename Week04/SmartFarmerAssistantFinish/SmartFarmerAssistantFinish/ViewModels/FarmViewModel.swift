@@ -18,7 +18,7 @@ class FarmViewModel : ObservableObject {
     
     // MARK: - CRUD Operations
     
-    // Create
+    // Create បង្កើត ប្រត្តិបត្តិការ
     func addTransaction(amount: Double, note: String, type: String, category: String) {
         let transaction = Transaction(context: context)
         transaction.amount = amount
@@ -33,7 +33,7 @@ class FarmViewModel : ObservableObject {
     
     // Read - Usually done with @FetchRequest in views
     
-    // Update
+    // Update កែប្រែ ប្រត្តិបត្តិការ
     func updateTransaction(_ transaction: Transaction,
                            amount: Double,
                            note: String,

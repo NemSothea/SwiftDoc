@@ -5,8 +5,10 @@ from fpdf import FPDF
 from fpdf.enums import XPos, YPos
 import os
 
-SF       = "/Library/Fonts/SF-Pro.ttf"
-SF_ITALIC = "/Library/Fonts/SF-Pro-Italic.ttf"
+SF        = "/Library/Fonts/SF-Pro-Text-Regular.otf"
+SF_BOLD   = "/Library/Fonts/SF-Pro-Text-Bold.otf"
+SF_ITALIC = "/Library/Fonts/SF-Pro-Text-RegularItalic.otf"
+SF_BOLDITALIC = "/Library/Fonts/SF-Pro-Text-BoldItalic.otf"
 
 DARK  = (20,  20,  35)
 GREY  = (100, 100, 120)
@@ -329,9 +331,9 @@ def build_pdf():
     pdf.set_auto_page_break(auto=True, margin=16)
     pdf.set_margins(18, 18, 18)
     pdf.add_font("SF", style="",   fname=SF)
-    pdf.add_font("SF", style="B",  fname=SF)
+    pdf.add_font("SF", style="B",  fname=SF_BOLD)
     pdf.add_font("SF", style="I",  fname=SF_ITALIC)
-    pdf.add_font("SF", style="BI", fname=SF_ITALIC)
+    pdf.add_font("SF", style="BI", fname=SF_BOLDITALIC)
 
     # ── Page 1: header ────────────────────────────────────────────────────────
     pdf.add_page()
@@ -387,5 +389,77 @@ def build_pdf():
     print(f"PDF saved -> {out}")
 
 
+def build_pdf_with_answers():
+    pdf = ExamPDF(orientation="P", unit="mm", format="A4")
+    pdf.set_auto_page_break(auto=True, margin=16)
+    pdf.set_margins(18, 18, 18)
+    pdf.add_font("SF", style="",   fname=SF)
+    pdf.add_font("SF", style="B",  fname=SF_BOLD)
+    pdf.add_font("SF", style="I",  fname=SF_ITALIC)
+    pdf.add_font("SF", style="BI", fname=SF_BOLDITALIC)
+
+    pdf.add_page()
+
+    pdf.set_font("SF", style="B", size=13)
+    pdf.set_text_color(*BLACK)
+    pdf.cell(0, 7, "Prek Leap National Institute of Agriculture", align="C",
+             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    pdf.set_font("SF", style="B", size=16)
+    pdf.set_text_color(*BLUE)
+    pdf.cell(0, 9, "Advanced iOS Quiz", align="C",
+             new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    pdf.set_font("SF", size=9)
+    pdf.set_text_color(*GREY)
+    pdf.cell(0, 5, "14 Questions  |  Multiple Choice + Complete the Code  |  Week 1-12 + Git  |  With Answer Key",
+             align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    pdf.ln(7)
+
+    pdf.set_draw_color(*BLUE)
+    pdf.set_line_width(0.5)
+    pdf.line(pdf.l_margin, pdf.get_y(), pdf.l_margin + pdf.epw, pdf.get_y())
+    pdf.set_line_width(0.2)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.ln(4)
+
+    for q in QUESTIONS:
+        pdf.question_block(q)
+        # answer callout
+        pdf.set_font("SF", style="B", size=9.5)
+        pdf.set_text_color(0, 130, 0)
+        pdf.set_x(pdf.l_margin + 6)
+        pdf.cell(0, 5.5, f"Correct Answer: {q['correct']}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.set_text_color(*BLACK)
+        pdf.ln(2)
+        pdf.draw_line()
+
+    # ── Answer key summary page ─────────────────────────────────────────────
+    pdf.add_page()
+    pdf.set_font("SF", style="B", size=14)
+    pdf.set_text_color(*BLUE)
+    pdf.cell(0, 8, "Answer Key", align="C", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+    pdf.ln(4)
+
+    pdf.set_font("SF", style="B", size=9.5)
+    pdf.set_text_color(*BLACK)
+    col_q, col_a, col_t = 15, 20, pdf.epw - 35
+    pdf.cell(col_q, 7, "Q", border="B")
+    pdf.cell(col_a, 7, "Answer", border="B")
+    pdf.cell(col_t, 7, "Topic", border="B", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    pdf.set_font("SF", size=9.5)
+    for q in QUESTIONS:
+        pdf.cell(col_q, 6.5, str(q["num"]), border="B")
+        pdf.cell(col_a, 6.5, q["correct"], border="B")
+        pdf.cell(col_t, 6.5, q["week"], border="B", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+
+    out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Advanced_iOS_Quiz_with_Answer.pdf")
+    pdf.output(out)
+    print(f"PDF saved -> {out}")
+
+
 if __name__ == "__main__":
     build_pdf()
+    build_pdf_with_answers()

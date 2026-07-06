@@ -19,6 +19,7 @@ enum ExpenseCategory: String, CaseIterable {
     case fertilizer = "ជី"           // Fertilizer
     case labor = "កម្លាំងពលកម្ម"    // Labor
     case tools = "ឧបករណ៍"          // Tools
+    case maintenance = "ការកំណារ"
     case other = "ផ្សេងៗ"           // Other
 }
 
@@ -27,6 +28,7 @@ enum IncomeCategory: String, CaseIterable {
     case fruit = "ផ្លែឈើ"           // Fruits
     case grain = "ស្រូវ-ដំណាំ"      // Grains/Crops
     case livestock = "សត្វ"          // Livestock
+    case otherIncome = "បន្លែដំណាំស្ពៃ"
     case other = "ផ្សេងៗ"           // Other
 }
 
